@@ -28,10 +28,12 @@ async function fetchPokemon() {
   }
  let  countPokemon = indexOffset;
   for (let index = 0; index <= pokemons.length; index++) {
-   if(pokemons[index].url == undefined){
-    return 0;
-   }
-    else{await getPokemonAbilities(pokemons[index].url);} 
+ //  if(pokemons[index].url === undefined){
+  //  return 0;
+ //  }
+   // else{
+      await getPokemonAbilities(pokemons[index].url);
+    //} 
 
     templatePokemon(allPokemonsData[index+countPokemon]);
   }
