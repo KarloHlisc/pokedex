@@ -3,31 +3,42 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-     <link rel="icon" type="image/x-icon" href="./assets/icons/Poké_Ball_icon.svg">
+    <link
+      rel="icon"
+      type="image/x-icon"
+      href="./assets/icons/Poké_Ball_icon.svg"
+    />
     <title>Fetch Pokemon API</title>
     <link rel="stylesheet" href="./style.css" />
     <link rel="stylesheet" href="./styles/pokemon-colors.css" />
     <script src="./scripts/template.js"></script>
   </head>
   <body onload="init()">
-    <div class="pokemon-container">
+    <header>
+      <div class="pokemon-container">
       <div class="title-sestion">
-      <h1>Pokemon</h1>
-      <div class="input">
-<input type="text" id="text">
-</div>
-</div>
+        <h1>Pokemon</h1>
+        <div class="input">
+          <input type="text" id="search-text" />
+          <button id="search-btn" onclick="searchArray()" >search</button>
+        </div>
+      </div>
+       </div>
+    </header>
+
+    <main>
+    <div class="pokemon-container">
+      
       <section class="pokemon-section">
         <ul id="pokemon"></ul>
         <button onclick="loadMorePokemons()" id="load-btn">Load more</button>
       </section>
     </div>
-    <script src="./script.js"></script>
+    
 
-    <section id="dialog-pokemon">
-     
-    </section>
-
+    <section id="dialog-pokemon"></section>
+    </main>
     <footer></footer>
+    <script src="./script.js"></script>
   </body>
 </html>
