@@ -4,7 +4,7 @@ function getTemplatePokemon(pokemonsData) {
     <div class="pokemon-cont">
         <div class="pokemon-header">
             <span>#${pokemonsData.id}</span>
-            <h3>${pokemonsData.name}</h3>
+            <h3>${pokemonsData.name.charAt(0).toUpperCase()+pokemonsData.name.slice(1)}</h3>
         </div>
         <div id="poke${pokemonsData.id}" class="pokemon-image-cont ${getBackgroundColorPokemon(pokemonsData)}">
             <img src="${pokemonsData.sprites.other.dream_world.front_default}" alt="pokemon Bild ${pokemonsData.name}">
@@ -16,3 +16,4 @@ function getTemplatePokemon(pokemonsData) {
     </li>
     `;
 }
+
