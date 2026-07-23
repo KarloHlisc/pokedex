@@ -72,20 +72,23 @@ function loadMorePokemons() {
 function filterItems(arr, query) {
  // for(let index=0; index < arr.length; index++){
   //  let pokemonName = arr[index].name;
- console.log( arr.includes((el) => el.name.toLowerCase().includes(query.toLowerCase())));
+ //   console.log(pokemonName);
+    
+ console.log( arr.filter((el) => el.name.toLowerCase().includes(query.toLowerCase())));
+// return arr.filter((el) => el.name.toLowerCase().includes(query.toLowerCase()))
 }
-
+//}
 function searchArray() {
     let btnSearch = document.getElementById('search-btn');
     let polemonBtnValue = document.getElementById('search-text').value;
    
-    console.log(filterItems(allPokemonsData,polemonBtnValue));
-    //document.getElementById('pokemon').innerHTML=templatePokemon();
+    console.log(filterItems(pokemons,polemonBtnValue));
+    document.getElementById('pokemon').innerHTML=templatePokemon(polemonBtnValue);
    showSarchPokemon(polemonBtnValue);
 }
 
 function showSarchPokemon(arr ,el,pokemonsData) {
-    templatePokemon(arr);
+  //  templatePokemon(arr);
 //  document.getElementById('pokemon').innerHTML=templatePokemon(el.name);
 }
 
