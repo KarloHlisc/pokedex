@@ -68,7 +68,21 @@ function getBackgroundColorPokemon(pokemonsData) {
 function loadMorePokemons() {
   fetchPokemon();
 }
+/////#############################___DIALOG
 
+const dialogRef = document.getElementById("myDialog");
+
+        function openDialog(){
+            dialogRef.showModal();
+          //  countPokemonIndex();
+        }
+
+        function closeDialog(){
+            dialogRef.close();
+        }
+
+///#############SEARCH
+/*
 function filterItems(arr, query) {
  // for(let index=0; index < arr.length; index++){
   //  let pokemonName = arr[index].name;
@@ -93,8 +107,30 @@ function showSarchPokemon(arr ,el,pokemonsData) {
 }
 
 
-/*
-function showDialog(pokemonsData) {
+function renderPokemons(){
+  let renderRef = document.getElementById('dialog-pokemon');
+  renderRef.innerHTML="";
+  for (let index = 0; index < pokemons.length; index++){
+    renderRef.innerHTML += getPokemonTemplate(index);
+  }
+}
+
+function getPokemonTemplate(index){
+  return `<div onclick="toggleOverlay${index}" class="single_element">
+            <img id=showPokemon" src"" `;
+}
+
+function toggleOverlay(index){
+  let overlayRef = document.getElementById('overlay')
+}
+
+
+function showDialog() {
+  let getDualog = document.getElementById('overlay');
+  getDualog.innerHTML = ""
+  console.log("open");
+}
+  /*
   document.getElementById("dialog-pokemon").innerHTML = 
   `
      <div id="first-block-pokemon-card">
@@ -134,6 +170,5 @@ function showDialog(pokemonsData) {
       </div>`;
 }
 
-showDialog();
-
+//showDialog();
 */
