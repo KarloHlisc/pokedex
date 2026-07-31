@@ -12,6 +12,8 @@
     <link rel="stylesheet" href="./style.css" />
     <link rel="stylesheet" href="./styles/pokemon-colors.css" />
     <script src="./scripts/template.js"></script>
+
+  
   </head>
   <body onload="init()">
     <header>
@@ -35,8 +37,26 @@
       </section>
     </div>
     
+ <dialog id="myDialog">
+            <header>
+                <h2 >
+                    Mien Daijlog
+                </h2>
+            </header>
+            <section>
+                <p id="text">Hier siehst du info die ich dir banana...</p>
+            </section>
+            <footer>
+                 <button onclick="closeDialog()">Schließen</button>
+            </footer>
+        </dialog>
 
-    <section id="dialog-pokemon"></section>
+        
+    <section id="dialog-pokemon">
+      <div id="overlay"></div>
+     
+    </section>
+
     </main>
     <footer></footer>
     <script src="./script.js"></script>
