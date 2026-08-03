@@ -3,13 +3,17 @@ let pokemons = [];
 let allPokemonsData = [];
 let indexOffset = 0;
 
+let indexPokemonCount = 0;
+
 const BASE_URL = "https://pokeapi.co/api/v2/";
 
 function init() {
+  // showLoading(true);
   fetchPokemon();
 }
 
 async function fetchPokemon() {
+ // showLoading(true);
   try {
     if (!pokemons.length == 0) {
       pokemons = [];
@@ -25,15 +29,20 @@ async function fetchPokemon() {
     pokemonContainer.innerHTML = "<li>Faild to load :( </li>";
     return;
   } finally {
+  //  showLoading(false);
   }
- countPokemonIndex();
+  countPokemonIndex();
+}
+
+function showLoading(isVisible){
+  document.getElementById("loading").classList.toggle("visible", isVisible);
 }
 
 async function countPokemonIndex() {
-  let  countPokemon = indexOffset;
+  let countPokemon = indexOffset;
   for (let index = 0; index < pokemons.length; index++) {
-      await getPokemonAbilities(pokemons[index].url);
-    templatePokemon(allPokemonsData[index+countPokemon]);
+    await getPokemonAbilities(pokemons[index].url);
+    templatePokemon(allPokemonsData[index + countPokemon]);
   }
 }
 
@@ -45,8 +54,9 @@ async function getPokemonAbilities(pokemonURL) {
 
 function templatePokemon(pokemonsData) {
   let templete = "";
-  templete += getTemplatePokemon(pokemonsData);
+  templete += getTemplatePokemon(pokemonsData, indexPokemonCount);
   pokemonContainer.innerHTML += templete;
+  indexPokemonCount++;
 }
 
 function pokemonTypes(pokemonsData) {
@@ -72,14 +82,160 @@ function loadMorePokemons() {
 
 const dialogRef = document.getElementById("myDialog");
 
-        function openDialog(){
-            dialogRef.showModal();
-          //  countPokemonIndex();
-        }
+function openDialog(index) {
+  showPokeomInDialog(index);
+  dialogRef.showModal();
+  //  countPokemonIndex();
+}
 
-        function closeDialog(){
-            dialogRef.close();
-        }
+function closeDialog() {
+  dialogRef.close();
+}
+
+function showPokeomInDialog(index) {
+  document.getElementById("showDialogPokemon").innerHTML =
+    pokemonDialogTemplate(index); //allPokemonsData[index].name.charAt(0).toUpperCase()+allPokemonsData[index].name.slice(1);
+}
+
+function pokemonDialogTemplate(index) {
+  let currentPokemon = allPokemonsData[index];
+  let pokemonHeight = currentPokemon.height/10;
+  let pokemonWeight = currentPokemon.weight/10;
+
+  pokemonHeight.toFixed(2).replaceAll(".",",");
+
+  return `<div data-id="overlay-pokemon-name" class="dialog-header" >
+                <h2 id="pokemonName">${currentPokemon.name.charAt(0).toUpperCase() + currentPokemon.name.slice(1)}</h2>
+                <span>#${currentPokemon.id}</span>     
+        </div>
+
+        <section >
+                <p id="text">Hier siehst du info die ich dir banana...</p>
+                <div id="poke${currentPokemon.id}" class="pokemon-image-cont ${getPokemonColorInDialog(index)}">
+            <img data-id="dialog-image" src="${currentPokemon.sprites.other.dream_world.front_default}" alt="pokemon Bild ${currentPokemon.name}">
+         </div>
+         <div class="card-abilitys">
+          <span></span>
+         </div>
+        </section>
+        <section id="dialogInfoPokemon">
+            <div>
+              <span>{getPokemonTypes(index)}</span>
+              
+            </div>
+        </section>
+        <section>
+
+        <div class="tab">
+            <button class="tablinks" onclick="openCity(event, 'About')">About</button>
+            <button class="tablinks" onclick="openCity(event, 'Base-stats')">Base stats</button>
+            <button class="tablinks" onclick="openCity(event, 'Evolution')">Evolution</button>
+        </div>
+
+<section class="pokemon-infos">
+        <div id="About" class="tabcontent">
+           <table>
+      <tr>
+        <td><b>Species:</b></td>
+        <td> ${currentPokemon.species.name.charAt(0).toUpperCase() + currentPokemon.name.slice(1)}</td>
+      </tr>
+      <tr>
+        <td><b>Height:</b></td>
+        <td> ${pokemonHeight} m</td>
+      </tr>
+      <tr>
+        <td><b>Weight:</b></td>
+        <td> ${pokemonWeight} kg</td>
+      </tr>
+      <tr>
+        <td><b>Abilities:</b></td>
+        <td id="abilities-content"> ${showPokemonAbilities(index)}</td>
+      </tr>
+     </table>
+         
+        </div>
+
+        <div id="Base-stats" class="tabcontent">
+          <table>
+      <tr>
+        <td><b>${currentPokemon.stats[0].stat.name.charAt(0).toUpperCase() + currentPokemon.stats[0].stat.name.slice(1)}:</b></td>
+        <td>${currentPokemon.stats[0].base_stat}</td>
+      </tr>
+      <tr>
+        <td><b>${currentPokemon.stats[1].stat.name.charAt(0).toUpperCase() + currentPokemon.stats[1].stat.name.slice(1)}:</b></td>
+        <td>${currentPokemon.stats[1].base_stat}</td>
+      </tr>
+      <tr>
+       <td><b>${currentPokemon.stats[2].stat.name.charAt(0).toUpperCase() + currentPokemon.stats[2].stat.name.slice(1)}:</b></td>
+        <td>${currentPokemon.stats[2].base_stat}</td>
+      </tr>
+      <tr>
+       <td><b>${currentPokemon.stats[3].stat.name.charAt(0).toUpperCase() + currentPokemon.stats[3].stat.name.slice(1)}:</b></td>
+        <td>${currentPokemon.stats[3].base_stat}</td>
+      </tr>
+       <tr>
+       <td><b>${currentPokemon.stats[4].stat.name.charAt(0).toUpperCase() + currentPokemon.stats[4].stat.name.slice(1)}:</b></td>
+        <td>${currentPokemon.stats[4].base_stat}</td>
+      </tr>
+       <tr>
+       <td><b>${currentPokemon.stats[5].stat.name.charAt(0).toUpperCase() + currentPokemon.stats[5].stat.name.slice(1)}</b>:</td>
+        <td>${currentPokemon.stats[5].base_stat}</td>
+      </tr>
+      
+     </table>
+        </div>
+
+        <div id="Evolution" class="tabcontent">
+          <h3>Tokyo</h3>
+          <p>Tokyo is the capital of Japan.</p>
+        </div>
+      </section>
+
+
+
+        </section>
+            
+        <div class="dialog-footer">
+          <div class="buttons-swich"> <button data-id="prev-button"><</button> <button data-id="next-button">></button>
+          </div>
+          <button data-id="close-dialog-button" onclick="closeDialog()">Schließen</button>
+        </div>`;
+}
+
+ function showPokemonAbilities(index){
+  let specialAbility = ""; 
+  let currentAbilitiy = allPokemonsData[index].abilities;
+  for(let indexAbility=0; indexAbility < currentAbilitiy.length; indexAbility++){
+      specialAbility +=   `${allPokemonsData[index].abilities[indexAbility].ability.name} `;
+  }
+  return specialAbility;
+}
+
+
+function getPokemonColorInDialog(index) {
+  let colorBackground = "";
+  let colorPicker = allPokemonsData[index].types[0];
+  colorBackground = colorPicker.type.name;
+  return colorBackground;
+}
+
+function getPokemonTypes(index) {
+  return `${allPokemonsData[index].types[index].type.name}`;
+}
+
+function openCity(evt, cityName) {
+  let i, tabcontent, tablinks;
+  tabcontent = document.getElementsByClassName("tabcontent");
+  for (i = 0; i < tabcontent.length; i++) {
+    tabcontent[i].style.display = "none";
+  }
+  tablinks = document.getElementsByClassName("tablinks");
+  for (i = 0; i < tablinks.length; i++) {
+    tablinks[i].className = tablinks[i].className.replace(" active", "");
+  }
+  document.getElementById(cityName).style.display = "block";
+  evt.currentTarget.className += " active";
+}
 
 ///#############SEARCH
 /*
