@@ -104,23 +104,25 @@ function pokemonDialogTemplate(index) {
   pokemonHeight.toFixed(2).replaceAll(".",",");
 
   return `<div data-id="overlay-pokemon-name" class="dialog-header" >
+  
                 <h2 id="pokemonName">${currentPokemon.name.charAt(0).toUpperCase() + currentPokemon.name.slice(1)}</h2>
-                <span>#${currentPokemon.id}</span>     
+               
+                <button data-id="close-dialog-button" class="dialog-button" onclick="closeDialog()">X</button>     
         </div>
 
         <section >
-                <p id="text">Hier siehst du info die ich dir banana...</p>
+              <span>#${currentPokemon.id}</span>    <p id="text">Hier siehst du info die ich dir banana...</p>
                 <div id="poke${currentPokemon.id}" class="pokemon-image-cont ${getPokemonColorInDialog(index)}">
             <img data-id="dialog-image" src="${currentPokemon.sprites.other.dream_world.front_default}" alt="pokemon Bild ${currentPokemon.name}">
+             
          </div>
          <div class="card-abilitys">
           <span></span>
          </div>
         </section>
         <section id="dialogInfoPokemon">
-            <div>
-              <span>{getPokemonTypes(index)}</span>
-              
+            <div class="dialog-poke-types types-cont">
+             ${getPokemonTypes(index)}
             </div>
         </section>
         <section>
@@ -132,7 +134,7 @@ function pokemonDialogTemplate(index) {
         </div>
 
 <section class="pokemon-infos">
-        <div id="About" class="tabcontent">
+        <div id="About" class="tabcontent active">
            <table>
       <tr>
         <td><b>Species:</b></td>
@@ -154,7 +156,7 @@ function pokemonDialogTemplate(index) {
          
         </div>
 
-        <div id="Base-stats" class="tabcontent">
+        <div id="Base-stats" class="tabcontent active">
           <table>
       <tr>
         <td><b>${currentPokemon.stats[0].stat.name.charAt(0).toUpperCase() + currentPokemon.stats[0].stat.name.slice(1)}:</b></td>
@@ -195,9 +197,9 @@ function pokemonDialogTemplate(index) {
         </section>
             
         <div class="dialog-footer">
-          <div class="buttons-swich"> <button data-id="prev-button"><</button> <button data-id="next-button">></button>
+          <div class="buttons-swich" > <button data-id="prev-button"><</button> <button data-id="next-button">></button>
           </div>
-          <button data-id="close-dialog-button" onclick="closeDialog()">Schließen</button>
+          
         </div>`;
 }
 
@@ -205,12 +207,10 @@ function pokemonDialogTemplate(index) {
   let specialAbility = ""; 
   let currentAbilitiy = allPokemonsData[index].abilities;
   for(let indexAbility=0; indexAbility < currentAbilitiy.length; indexAbility++){
-      specialAbility +=   `${allPokemonsData[index].abilities[indexAbility].ability.name}, `;
-    
+      specialAbility +=   `${allPokemonsData[index].abilities[indexAbility].ability.name}, `; 
   }
   return specialAbility = specialAbility.replace(/,\s*$/, " ");
 }
-
 
 function getPokemonColorInDialog(index) {
   let colorBackground = "";
@@ -220,7 +220,13 @@ function getPokemonColorInDialog(index) {
 }
 
 function getPokemonTypes(index) {
-  return `${allPokemonsData[index].types[index].type.name}`;
+  let pokemonType ="";
+  let pokeTypes = allPokemonsData[index].types;
+  for(indexType = 0; indexType < pokeTypes.length; indexType++){
+     const element =pokeTypes[indexType];
+    pokemonType += `<span class="${element.type.name}" class="pokemon-typle-style"><b>${element.type.name}</b> </span>`;
+  }
+  return pokemonType;
 }
 
 function openCity(evt, cityName) {
