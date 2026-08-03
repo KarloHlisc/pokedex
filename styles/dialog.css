@@ -1,0 +1,32 @@
+#myDialog {
+  border-bottom-right-radius: 30px;
+  border-top-left-radius: 30px;
+  border: 0;
+  background: rgba(209, 209, 209, 0.9);
+  margin: auto;
+  justify-content: center;
+  align-items: center;
+  width: 400px;
+  height: 600px;
+}
+
+td {
+  padding: 5px;
+}
+
+.dialog-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 15px;
+  margin: 10px;
+}
+
+.dialog-button {
+  border: none;
+  height: 30px;
+  width: 30px;
+  border-radius: 30px;
+  background: antiquewhite;
+  cursor: pointer;
+}
