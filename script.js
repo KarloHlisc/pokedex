@@ -93,8 +93,7 @@ function closeDialog() {
 }
 
 function showPokeomInDialog(index) {
-  document.getElementById("showDialogPokemon").innerHTML =
-    pokemonDialogTemplate(index); //allPokemonsData[index].name.charAt(0).toUpperCase()+allPokemonsData[index].name.slice(1);
+  document.getElementById("showDialogPokemon").innerHTML = pokemonDialogTemplate(index); 
 }
 
 function pokemonDialogTemplate(index) {
@@ -206,9 +205,10 @@ function pokemonDialogTemplate(index) {
   let specialAbility = ""; 
   let currentAbilitiy = allPokemonsData[index].abilities;
   for(let indexAbility=0; indexAbility < currentAbilitiy.length; indexAbility++){
-      specialAbility +=   `${allPokemonsData[index].abilities[indexAbility].ability.name} `;
+      specialAbility +=   `${allPokemonsData[index].abilities[indexAbility].ability.name}, `;
+    
   }
-  return specialAbility;
+  return specialAbility = specialAbility.replace(/,\s*$/, " ");
 }
 
 
