@@ -2,63 +2,85 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
+    <meta name="description" content="Fetch Pokemons from PokeAPI.">
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link
       rel="icon"
       type="image/x-icon"
       href="./assets/icons/Poké_Ball_icon.svg"
     />
-    <title>Fetch Pokemon API</title>
+    <title>Pokedex</title>
     <link rel="stylesheet" href="./style.css" />
     <link rel="stylesheet" href="./styles/pokemon-colors.css" />
+    <link rel="stylesheet" href="./styles/dialog-tabs.css" />
+    <link rel="stylesheet" href="styles/dialog.css" />
     <script src="./scripts/template.js"></script>
-
-  
   </head>
   <body onload="init()">
     <header>
       <div class="pokemon-container">
-      <div class="title-sestion">
-        <h1>Pokemon</h1>
-        <div class="input">
-          <input type="text" id="search-text" />
-          <button id="search-btn" onclick="searchArray()" >search</button>
+        <div class="title-sestion">
+          <h1>Pokemon</h1>
+          <div class="input">
+            <input type="text" data-id="search-input" />
+            <button id="search-btn" onclick="searchArray()">search</button>
+          </div>
         </div>
       </div>
-       </div>
     </header>
 
-    <main>
-    <div class="pokemon-container">
-      
-      <section class="pokemon-section">
-        <ul id="pokemon"></ul>
-        <button onclick="loadMorePokemons()" id="load-btn">Load more</button>
-      </section>
-    </div>
+    <main data-id="content">
+
+       <div id="loading">
+        <img src="./assets/gif/pikach.gif" alt="Lädt...">
+      </div>
+
+      <div class="pokemon-container">
+        <section class="pokemon-section">
+          <ul id="pokemon"></ul>
+          <button onclick="loadMorePokemons()" id="load-btn">Load more</button>
+        </section>
+      </div>
+
+      <dialog id="myDialog">
+        <div id="showDialogPokemon">
+          <div class="dialog-header">
+            <h2 id="pokemonName">Mien Daijlog</h2>
+          </div>
+          <section>
+            <p id="text">Hier siehst du info die ich dir banana...</p>
+          </section>
+          <div class="dialog-footer">
+            <button onclick="closeDialog()">Schließen</button>
+          </div>
+        </div>
+      </dialog>
+
     
- <dialog id="myDialog">
-            <header>
-                <h2 >
-                    Mien Daijlog
-                </h2>
-            </header>
-            <section>
-                <p id="text">Hier siehst du info die ich dir banana...</p>
-            </section>
-            <footer>
-                 <button onclick="closeDialog()">Schließen</button>
-            </footer>
-        </dialog>
 
-        
-    <section id="dialog-pokemon">
-      <div id="overlay"></div>
-     
-    </section>
-
+      <section id="dialog-pokemon">
+        <div id="overlay"></div>
+      </section>
     </main>
     <footer></footer>
     <script src="./script.js"></script>
   </body>
 </html>
+
+<!--
+
+<dialog id="myDialog">
+            <div class="dialog-header">
+                <h2 id="pokemonName">
+                    Mien Daijlog
+                </h2>
+              </div>
+            <section>
+                <p id="text">Hier siehst du info die ich dir banana...</p>
+            </section>
+            <div class="dialog-footer">
+                 <button onclick="closeDialog()">Schließen</button>
+            </div>
+        </dialog>
+
+-->
