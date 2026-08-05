@@ -64,6 +64,18 @@ ul {
   color: black;
 }
 
+progress{
+    color: red;
+}
+
+progress.orange{
+    color: orange;
+}
+
+progress.green{
+    color: green;
+}
+
 li {
   margin: 10px;
 }
