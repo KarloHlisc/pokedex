@@ -22,6 +22,13 @@ td {
   margin: 10px;
 }
 
+#dialogInfoPokemon {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 10px;
+}
+
 .dialog-button {
   border: none;
   height: 30px;
@@ -32,9 +39,7 @@ td {
 }
 
 .dialog-button:hover {
- background: #ccc;
+  background: #ccc;
   cursor: pointer;
   border: 0.2px solid #f1f1f1;
 }
-
-
