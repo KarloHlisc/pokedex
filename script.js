@@ -123,7 +123,7 @@ function pokemonDialogTemplate(index,pokemonsEvoData) {
         </div>
 
         <section >
-              <span>#${currentPokemon.id}</span>    <p id="text">Hier siehst du info die ich dir banana...</p>
+              <span>#${currentPokemon.id}</span>    <p id="text">Hier siehst du info die ich dir ...</p>
                 <div id="poke${currentPokemon.id}" class="pokemon-image-cont ${getPokemonColorInDialog(index)}">
             <img data-id="dialog-image" src="${currentPokemon.sprites.other.dream_world.front_default}" alt="pokemon Bild ${currentPokemon.name}">
              
@@ -133,9 +133,13 @@ function pokemonDialogTemplate(index,pokemonsEvoData) {
          </div>
         </section>
         <section id="dialogInfoPokemon">
+         <div class="buttons-swich" > <button data-id="prev-button" onclick="${changeImage(index-1)}"><</button> 
+          </div>
             <div class="dialog-poke-types types-cont">
              ${getPokemonTypes(index)}
             </div>
+             <div class="buttons-swich" >  <button data-id="next-button" onclick="${changeImage(index)}">></button>
+          </div>
         </section>
         <section>
 
@@ -203,10 +207,10 @@ function pokemonDialogTemplate(index,pokemonsEvoData) {
      </table>
         </div>
 
-        <div id="Evolution" class="tabcontent">
-          <h3>Tokyo</h3>
-         
-          <p>Tokyo is the capital of Japan. </p>
+        <div id="evolutionPokemon" class="tabcontent">
+          <h3>Evolution</h3>
+         ${getTemplateEvolutionPokemon(pokemonsEvoData, indexPokemonCount)}
+          <p>Hier kommt evolution chain </p>
         </div>
       </section>
 
@@ -215,13 +219,23 @@ function pokemonDialogTemplate(index,pokemonsEvoData) {
         </section>
             
         <div class="dialog-footer">
-          <div class="buttons-swich" > <button data-id="prev-button" onclick="${changeImage(index)}"><</button> <button data-id="next-button" onclick="${changeImage(index)}">></button>
-          </div>
+         
           
         </div>`;
 }
 
-
+/*
+function showStatPokemon(currentPokemon){
+  let pokemonStat="";
+  for(let indexStat = 0; indexStat < currentPokemon.stats.length; indexStat++){
+    pokemonStat.innerHTML +=  `
+                        <td><b>${currentPokemon.stats[indexStat].stat.name.charAt(0).toUpperCase() + currentPokemon.stats[indexStat].stat.name.slice(1)}:</b></td>
+        <td>${currentPokemon.stats[0].base_stat}</td>
+        <td><progress data-color="${currentPokemon.stats[indexStat].base_stat}" value="${currentPokemon.stats[indexStat].base_stat}" max="100"></progress></td>
+    `;
+  }
+}
+*/
 
  function showPokemonAbilities(index){
   let specialAbility = ""; 
