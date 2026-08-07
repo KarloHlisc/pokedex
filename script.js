@@ -12,7 +12,7 @@ let currentPokemonEvolutionData = [];
 const BASE_URL = "https://pokeapi.co/api/v2/";
 
 function init() {
-  // showLoading(true);
+  showLoading(true);
   fetchPokemon();
 }
 
@@ -150,9 +150,21 @@ async function fetchPokemonEvolutionChain(pokemonEvolutionUrl) {
     const url = pokemonEvolutionUrl;
     const response = await fetch(url);
     const evolution = await response.json();
-    let evolutionChainUrl = evolution.chain.evolves_to;
+    let evolutionChainUrl = evolution.chain; //.evolves_to;
 
     console.log(evolutionChainUrl);
+
+     console.log(evolutionChainUrl.evolves_to[0]);
+
+    while(evolutionChainUrl.evolves_to[0]==0){
+     //  staviPokemonNutra(imePokemona);
+     console.log(evolutionChainUrl.evolves_to[0].species.name);
+     
+    }
+
+    let imePokemona = evolutionChainUrl.species.name;
+   
+    staviPokemonNutra(imePokemona);
     
     //currentPokemonEvolutionData.push(...pokemonEvolutionData);
     //console.log(currentPokemonEvolutionData);
@@ -166,7 +178,10 @@ async function fetchPokemonEvolutionChain(pokemonEvolutionUrl) {
   }
 }
 
-
+function staviPokemonNutra(imePokemona){
+  let evoluRef = document.getElementById('showEvolutionChains');
+  evoluRef.innerHTML =`evo me ${imePokemona}`;
+}
 
 
 function pokemonDialogTemplate(index, pokemonsEvoData) {
@@ -203,9 +218,9 @@ function pokemonDialogTemplate(index, pokemonsEvoData) {
         <section>
 
         <div class="tab">
-            <button class="show-this" onclick="openCity(event, 'About')">About</button>
+            <button class="tablinks" onclick="openCity(event, 'About')">About</button>
             <button class="tablinks" onclick="openCity(event, 'Base-stats')">Base stats</button>
-            <button class="tablinks" onclick="openCity(event, 'Evolution'), fetchEvolutionPokemon()">Evolution</button>
+            <button class="tablinks" onclick="openCity(event, 'Evolution')">Evolution</button>
         </div>
 
 <section class="pokemon-infos">
@@ -223,24 +238,25 @@ function pokemonDialogTemplate(index, pokemonsEvoData) {
         <td><b>Weight:</b></td>
         <td> ${pokemonWeight} kg</td>
       </tr>
-      <tr>
-        <td><b>Abilities:</b></td>
-        <td id="abilities-content"> ${showPokemonAbilities(index)}</td>
-      </tr>
-     </table>
+               <tr>
+                 <td><b>Abilities:</b></td>
+                 <td id="abilities-content"> ${showPokemonAbilities(index)}</td>
+               </tr>
+           </table>
          
         </div>
 
         <div id="Base-stats" class="tabcontent">
-          <table>
+           <table>
             ${showStatPokemon(currentPokemon)}
-     </table>
+           </table>
         </div>
 
-        <div id="evolutionPokemon" class="tabcontent">
+        <div id="Evolution" class="tabcontent">
           <h3>Evolution</h3>
         
           <p>Hier kommt evolution chain </p>
+              <div id="showEvolutionChains"></div>
         </div>
       </section>
 
