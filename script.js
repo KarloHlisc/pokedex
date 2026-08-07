@@ -6,6 +6,9 @@ let currentIndex = 1;
 let indexPokemonCount = 0;
 let totalPokemons = allPokemonsData.length;
 
+let pokemonSpeciesUrl = [];
+let currentPokemonEvolutionData = [];
+
 const BASE_URL = "https://pokeapi.co/api/v2/";
 
 function init() {
@@ -30,14 +33,17 @@ async function fetchPokemon() {
     pokemonContainer.innerHTML = "<li>Faild to load :( </li>";
     return;
   } finally {
-   showLoading(false);
+    showLoading(false);
   }
   countPokemonIndex();
 }
 
-function showLoading(isVisible){
+function showLoading(isVisible) {
   document.getElementById("loading").classList.toggle("visible", isVisible);
 }
+
+
+
 
 async function countPokemonIndex() {
   let countPokemon = indexOffset;
@@ -87,7 +93,7 @@ function changeImage(direction) {
   } else if (currentIndex < 0) {
     currentIndex = totalPokemons - 1;
   }
- // updateLightboxImage();
+  // updateLightboxImage();
 }
 /////#############################___DIALOG
 
@@ -104,22 +110,75 @@ function closeDialog() {
 }
 
 function showPokeomInDialog(index) {
-  document.getElementById("showDialogPokemon").innerHTML = pokemonDialogTemplate(index); 
+  document.getElementById("showDialogPokemon").innerHTML =
+    pokemonDialogTemplate(index);
+    getPokemonSpeciesUrl(index);   
 }
 
-function pokemonDialogTemplate(index,pokemonsEvoData) {
+ function getPokemonSpeciesUrl(index){
+    let speciesUrlPokemon = allPokemonsData[index].species.url;
+     console.log(speciesUrlPokemon);
+     fetchPokemonEvolution(speciesUrlPokemon)
+}
 
+async function fetchPokemonEvolution(pokemonSpeciesUrl) {
+ // showLoading(true);
+  try {
+    const url = pokemonSpeciesUrl;
+    const response = await fetch(url);
+    const evolution = await response.json();
+    let pokemonEvolutionChainUrl = evolution.evolution_chain;
+    let chainUrl = pokemonEvolutionChainUrl.url;
+    console.log(chainUrl);
+    await fetchPokemonEvolutionChain(chainUrl)
+    //currentPokemonEvolutionData.push(...pokemonEvolutionData);
+    //console.log(currentPokemonEvolutionData);
+    
+  } catch (error) {
+    console.log("Faild to fetch Pokemon :/", error);
+    pokemonContainer.innerHTML = "<li>Faild to load :( </li>";
+    return;
+  } finally {
+   // showLoading(false);
+  }
+}
+
+
+async function fetchPokemonEvolutionChain(pokemonEvolutionUrl) {
+ // showLoading(true);
+  try {
+    const url = pokemonEvolutionUrl;
+    const response = await fetch(url);
+    const evolution = await response.json();
+    let evolutionChainUrl = evolution.chain.evolves_to;
+
+    console.log(evolutionChainUrl);
+    
+    //currentPokemonEvolutionData.push(...pokemonEvolutionData);
+    //console.log(currentPokemonEvolutionData);
+    
+  } catch (error) {
+    console.log("Faild to fetch Pokemon :/", error);
+    pokemonContainer.innerHTML = "<li>Faild to load :( </li>";
+    return;
+  } finally {
+   // showLoading(false);
+  }
+}
+
+
+
+
+function pokemonDialogTemplate(index, pokemonsEvoData) {
   let currentPokemon = allPokemonsData[index];
-  let pokemonHeight = currentPokemon.height/10;
-  let pokemonWeight = currentPokemon.weight/10;
+  let pokemonHeight = currentPokemon.height / 10;
+  let pokemonWeight = currentPokemon.weight / 10;
 
-  pokemonHeight.toFixed(2).replaceAll(".",",");
+  pokemonHeight.toFixed(2).replaceAll(".", ",");
 
   return `<div data-id="overlay-pokemon-name" class="dialog-header" >
-  
-                <h2 id="pokemonName">${currentPokemon.name.charAt(0).toUpperCase() + currentPokemon.name.slice(1)}</h2>
-               
-                <button data-id="close-dialog-button" class="dialog-button" onclick="closeDialog()">X</button>     
+                  <h2 id="pokemonName">${currentPokemon.name.charAt(0).toUpperCase() + currentPokemon.name.slice(1)}</h2>
+                   <button data-id="close-dialog-button" class="dialog-button" onclick="closeDialog()">X</button>     
         </div>
 
         <section >
@@ -133,7 +192,7 @@ function pokemonDialogTemplate(index,pokemonsEvoData) {
          </div>
         </section>
         <section id="dialogInfoPokemon">
-         <div class="buttons-swich" > <button data-id="prev-button" onclick="${changeImage(index-1)}"><</button> 
+         <div class="buttons-swich" > <button data-id="prev-button" onclick="${changeImage(index - 1)}"><</button> 
           </div>
             <div class="dialog-poke-types types-cont">
              ${getPokemonTypes(index)}
@@ -144,13 +203,13 @@ function pokemonDialogTemplate(index,pokemonsEvoData) {
         <section>
 
         <div class="tab">
-            <button class="tablinks" onclick="openCity(event, 'About')">About</button>
+            <button class="show-this" onclick="openCity(event, 'About')">About</button>
             <button class="tablinks" onclick="openCity(event, 'Base-stats')">Base stats</button>
-            <button class="tablinks" onclick="openCity(event, 'Evolution')">Evolution</button>
+            <button class="tablinks" onclick="openCity(event, 'Evolution'), fetchEvolutionPokemon()">Evolution</button>
         </div>
 
 <section class="pokemon-infos">
-        <div id="About" class="tabcontent active">
+        <div id="About" class="tabcontent">
            <table>
       <tr>
         <td><b>Species:</b></td>
@@ -172,44 +231,15 @@ function pokemonDialogTemplate(index,pokemonsEvoData) {
          
         </div>
 
-        <div id="Base-stats" class="tabcontent active">
+        <div id="Base-stats" class="tabcontent">
           <table>
-      <tr>
-        <td><b>${currentPokemon.stats[0].stat.name.charAt(0).toUpperCase() + currentPokemon.stats[0].stat.name.slice(1)}:</b></td>
-        <td>${currentPokemon.stats[0].base_stat}</td>
-        <td><progress data-color="${currentPokemon.stats[0].base_stat}" value="${currentPokemon.stats[0].base_stat}" max="100"></progress></td>
-      </tr>
-      <tr>
-        <td><b>${currentPokemon.stats[1].stat.name.charAt(0).toUpperCase() + currentPokemon.stats[1].stat.name.slice(1)}:</b></td>
-        <td>${currentPokemon.stats[1].base_stat}</td>
-        <td><progress value="${currentPokemon.stats[1].base_stat}" max="100"></progress></td>
-      </tr>
-      <tr>
-       <td><b>${currentPokemon.stats[2].stat.name.charAt(0).toUpperCase() + currentPokemon.stats[2].stat.name.slice(1)}:</b></td>
-        <td>${currentPokemon.stats[2].base_stat}</td>
-        <td><progress value="${currentPokemon.stats[2].base_stat}" max="100"></progress></td>
-      </tr>
-      <tr>
-       <td><b>${currentPokemon.stats[3].stat.name.charAt(0).toUpperCase() + currentPokemon.stats[3].stat.name.slice(1)}:</b></td>
-        <td>${currentPokemon.stats[3].base_stat}</td>
-        <td><progress value="${currentPokemon.stats[3].base_stat}" max="100"></progress></td>
-      </tr>
-       <tr>
-       <td><b>${currentPokemon.stats[4].stat.name.charAt(0).toUpperCase() + currentPokemon.stats[4].stat.name.slice(1)}:</b></td>
-        <td>${currentPokemon.stats[4].base_stat}</td>
-        <td><progress value="${currentPokemon.stats[4].base_stat}" max="100"></progress></td>
-      </tr>
-       <tr>
-       <td><b>${currentPokemon.stats[5].stat.name.charAt(0).toUpperCase() + currentPokemon.stats[5].stat.name.slice(1)}</b>:</td>
-        <td>${currentPokemon.stats[5].base_stat}</td>
-        <td><progress value="${currentPokemon.stats[5].base_stat}" max="100"></progress></td>
-      </tr>
+            ${showStatPokemon(currentPokemon)}
      </table>
         </div>
 
         <div id="evolutionPokemon" class="tabcontent">
           <h3>Evolution</h3>
-         ${getTemplateEvolutionPokemon(pokemonsEvoData, indexPokemonCount)}
+        
           <p>Hier kommt evolution chain </p>
         </div>
       </section>
@@ -224,26 +254,34 @@ function pokemonDialogTemplate(index,pokemonsEvoData) {
         </div>`;
 }
 
-/*
-function showStatPokemon(currentPokemon){
-  let pokemonStat="";
-  for(let indexStat = 0; indexStat < currentPokemon.stats.length; indexStat++){
-    pokemonStat.innerHTML +=  `
-                        <td><b>${currentPokemon.stats[indexStat].stat.name.charAt(0).toUpperCase() + currentPokemon.stats[indexStat].stat.name.slice(1)}:</b></td>
-        <td>${currentPokemon.stats[0].base_stat}</td>
-        <td><progress data-color="${currentPokemon.stats[indexStat].base_stat}" value="${currentPokemon.stats[indexStat].base_stat}" max="100"></progress></td>
-    `;
+function showStatPokemon(currentPokemon) {
+  let pokemonStat = "";
+  for (
+    let indexStat = 0;
+    indexStat < currentPokemon.stats.length;
+    indexStat++
+  ) {
+    pokemonStat += `<tr>
+                    <td><b>${currentPokemon.stats[indexStat].stat.name.charAt(0).toUpperCase() + currentPokemon.stats[indexStat].stat.name.slice(1)}:</b></td>
+                    <td>${currentPokemon.stats[indexStat].base_stat}</td>
+                    <td><progress data-color="${currentPokemon.stats[indexStat].base_stat}" value="${currentPokemon.stats[indexStat].base_stat}" max="100"></progress></td>
+                 </tr>`;
   }
+  return pokemonStat;
 }
-*/
 
- function showPokemonAbilities(index){
-  let specialAbility = ""; 
+
+function showPokemonAbilities(index) {
+  let specialAbility = "";
   let currentAbilitiy = allPokemonsData[index].abilities;
-  for(let indexAbility=0; indexAbility < currentAbilitiy.length; indexAbility++){
-      specialAbility +=`${allPokemonsData[index].abilities[indexAbility].ability.name}, `; 
+  for (
+    let indexAbility = 0;
+    indexAbility < currentAbilitiy.length;
+    indexAbility++
+  ) {
+    specialAbility += `${allPokemonsData[index].abilities[indexAbility].ability.name}, `;
   }
-  return specialAbility = specialAbility.replace(/,\s*$/, " ");
+  return (specialAbility = specialAbility.replace(/,\s*$/, " "));
 }
 
 function getPokemonColorInDialog(index) {
@@ -254,10 +292,10 @@ function getPokemonColorInDialog(index) {
 }
 
 function getPokemonTypes(index) {
-  let pokemonType ="";
+  let pokemonType = "";
   let pokeTypes = allPokemonsData[index].types;
-  for(indexType = 0; indexType < pokeTypes.length; indexType++){
-     const element =pokeTypes[indexType];
+  for (indexType = 0; indexType < pokeTypes.length; indexType++) {
+    const element = pokeTypes[indexType];
     pokemonType += `<span class="${element.type.name}" class="pokemon-typle-style"><b>${element.type.name}</b></span>`;
   }
   return pokemonType;
@@ -267,7 +305,7 @@ function openCity(evt, cityName) {
   let i, tabcontent, tablinks;
   tabcontent = document.getElementsByClassName("tabcontent");
   for (i = 0; i < tabcontent.length; i++) {
-    tabcontent[i].style.display = "none";
+       tabcontent[i].style.display = "none";
   }
   tablinks = document.getElementsByClassName("tablinks");
   for (i = 0; i < tablinks.length; i++) {
@@ -279,15 +317,8 @@ function openCity(evt, cityName) {
 
 //_____________________________________ Evolution
 
-
-
-
-
-
-
-
 ///#############SEARCH
-/*
+
 function filterItems(arr, query) {
  // for(let index=0; index < arr.length; index++){
   //  let pokemonName = arr[index].name;
@@ -324,7 +355,7 @@ function getPokemonTemplate(index){
   return `<div onclick="toggleOverlay${index}" class="single_element">
             <img id=showPokemon" src"" `;
 }
-
+/*
 function toggleOverlay(index){
   let overlayRef = document.getElementById('overlay')
 }
