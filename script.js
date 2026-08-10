@@ -82,7 +82,7 @@ function getBackgroundColorPokemon(pokemonsData) {
   return bgColor;
 }
 
-function loadMorePokemons() {
+function loadMorePokemons() { //dodati da dok se to radi da se ne moze kliknuti na gumb dok traje fetch. ugraditi u finnalyh
   fetchPokemon();
 }
 
@@ -101,6 +101,7 @@ const dialogRef = document.getElementById("myDialog");
 
 function openDialog(index) {
   showPokeomInDialog(index);
+  openCity(event, 'About');
   dialogRef.showModal();
   //  countPokemonIndex();
 }
@@ -273,10 +274,7 @@ function pokemonDialogTemplate(index, pokemonsEvoData) {
 function showStatPokemon(currentPokemon) {
   let pokemonStat = "";
   for (
-    let indexStat = 0;
-    indexStat < currentPokemon.stats.length;
-    indexStat++
-  ) {
+    let indexStat = 0; indexStat < currentPokemon.stats.length; indexStat++) {
     pokemonStat += `<tr>
                     <td><b>${currentPokemon.stats[indexStat].stat.name.charAt(0).toUpperCase() + currentPokemon.stats[indexStat].stat.name.slice(1)}:</b></td>
                     <td>${currentPokemon.stats[indexStat].base_stat}</td>
@@ -286,15 +284,11 @@ function showStatPokemon(currentPokemon) {
   return pokemonStat;
 }
 
-
 function showPokemonAbilities(index) {
   let specialAbility = "";
   let currentAbilitiy = allPokemonsData[index].abilities;
   for (
-    let indexAbility = 0;
-    indexAbility < currentAbilitiy.length;
-    indexAbility++
-  ) {
+    let indexAbility = 0; indexAbility < currentAbilitiy.length; indexAbility++) {
     specialAbility += `${allPokemonsData[index].abilities[indexAbility].ability.name}, `;
   }
   return (specialAbility = specialAbility.replace(/,\s*$/, " "));
