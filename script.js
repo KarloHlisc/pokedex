@@ -5,9 +5,9 @@ let indexOffset = 0;
 let currentIndex = 1;
 let indexPokemonCount = 0;
 let totalPokemons = allPokemonsData.length;
-
+let evolutionImageArray = [];
 let pokemonSpeciesUrl = [];
-let currentPokemonEvolutionData = [];
+// let currentPokemonEvolutionData = [];
 
 const BASE_URL = "https://pokeapi.co/api/v2/";
 
@@ -17,7 +17,7 @@ function init() {
 }
 
 async function fetchPokemon() {
-  showLoading(true);
+ // showLoading(true);
   try {
     if (!pokemons.length == 0) {
       pokemons = [];
@@ -33,7 +33,7 @@ async function fetchPokemon() {
     pokemonContainer.innerHTML = "<li>Faild to load :( </li>";
     return;
   } finally {
-    showLoading(false);
+   
   }
   countPokemonIndex();
 }
@@ -41,9 +41,6 @@ async function fetchPokemon() {
 function showLoading(isVisible) {
   document.getElementById("loading").classList.toggle("visible", isVisible);
 }
-
-
-
 
 async function countPokemonIndex() {
   let countPokemon = indexOffset;
@@ -64,6 +61,7 @@ function templatePokemon(pokemonsData) {
   templete += getTemplatePokemon(pokemonsData, indexPokemonCount);
   pokemonContainer.innerHTML += templete;
   indexPokemonCount++;
+   showLoading(false);
 }
 
 function pokemonTypes(pokemonsData) {
@@ -101,7 +99,7 @@ const dialogRef = document.getElementById("myDialog");
 
 function openDialog(index) {
   showPokeomInDialog(index);
-  openCity(event, 'About');
+  openTab(event, 'About');
   dialogRef.showModal();
   //  countPokemonIndex();
 }
@@ -119,10 +117,10 @@ function showPokeomInDialog(index) {
  function getPokemonSpeciesUrl(index){
     let speciesUrlPokemon = allPokemonsData[index].species.url;
      console.log(speciesUrlPokemon);
-     fetchPokemonEvolution(speciesUrlPokemon)
+     fetchPokemonEvolution(speciesUrlPokemon, index)
 }
 
-async function fetchPokemonEvolution(pokemonSpeciesUrl) {
+async function fetchPokemonEvolution(pokemonSpeciesUrl ,index) {
  // showLoading(true);
   try {
     const url = pokemonSpeciesUrl;
@@ -131,7 +129,7 @@ async function fetchPokemonEvolution(pokemonSpeciesUrl) {
     let pokemonEvolutionChainUrl = evolution.evolution_chain;
     let chainUrl = pokemonEvolutionChainUrl.url;
     console.log(chainUrl);
-    await fetchPokemonEvolutionChain(chainUrl)
+    await fetchPokemonEvolutionChain(chainUrl,index)
     //currentPokemonEvolutionData.push(...pokemonEvolutionData);
     //console.log(currentPokemonEvolutionData);
     
@@ -145,7 +143,7 @@ async function fetchPokemonEvolution(pokemonSpeciesUrl) {
 }
 
 
-async function fetchPokemonEvolutionChain(pokemonEvolutionUrl) {
+async function fetchPokemonEvolutionChain(pokemonEvolutionUrl,index) {
  // showLoading(true);
   try {
     const url = pokemonEvolutionUrl;
@@ -153,19 +151,19 @@ async function fetchPokemonEvolutionChain(pokemonEvolutionUrl) {
     const evolution = await response.json();
     let evolutionChainUrl = evolution.chain; //.evolves_to;
 
-    console.log(evolutionChainUrl);
+  //  console.log(evolutionChainUrl);
 
-     console.log(evolutionChainUrl.evolves_to[0]);
+  //   console.log(evolutionChainUrl.evolves_to[0]);
 
-    while(evolutionChainUrl.evolves_to[0]==0){
-     //  staviPokemonNutra(imePokemona);
+    while(evolutionChainUrl.evolves_to[0]>0){
+       staviPokemonNutra(imePokemona);
      console.log(evolutionChainUrl.evolves_to[0].species.name);
      
     }
 
     let imePokemona = evolutionChainUrl.species.name;
    
-    staviPokemonNutra(imePokemona);
+  //  staviPokemonNutra(imePokemona,index);
     
     //currentPokemonEvolutionData.push(...pokemonEvolutionData);
     //console.log(currentPokemonEvolutionData);
@@ -179,11 +177,21 @@ async function fetchPokemonEvolutionChain(pokemonEvolutionUrl) {
   }
 }
 
-function staviPokemonNutra(imePokemona){
-  let evoluRef = document.getElementById('showEvolutionChains');
-  evoluRef.innerHTML =`evo me ${imePokemona}`;
+async function staviPokemonNutra(imePokemona){
+  const pokemonImage = await getSpecificPokemonImg(imePokemona);
+  const evoluRef = document.getElementById('showEvolutionChains');
+  let pokemonEvolutionName = imePokemona.charAt(0).toUpperCase() + imePokemona.slice(1);
+  evoluRef.innerHTML +=`<div>${pokemonEvolutionName} </div><img id="pokemon-chain-img" src="${pokemonImage}" alt"${pokemonEvolutionName}">`;
+  return evoluRef;
 }
 
+async function getSpecificPokemonImg(imePokemona) {
+  const pokemonEvolutionImage = BASE_URL+'pokemon/'+imePokemona+'/';
+  const response = await fetch(pokemonEvolutionImage);
+  const evolutionData = await response.json();
+  const evolutionImagePokemon = evolutionData.sprites.other.dream_world.front_default;
+  return evolutionImagePokemon;
+}
 
 function pokemonDialogTemplate(index, pokemonsEvoData) {
   let currentPokemon = allPokemonsData[index];
@@ -194,14 +202,12 @@ function pokemonDialogTemplate(index, pokemonsEvoData) {
 
   return `<div data-id="overlay-pokemon-name" class="dialog-header" >
                   <h2 id="pokemonName">${currentPokemon.name.charAt(0).toUpperCase() + currentPokemon.name.slice(1)}</h2>
-                   <button data-id="close-dialog-button" class="dialog-button" onclick="closeDialog()">X</button>     
-        </div>
-
+                  <button data-id="close-dialog-button" class="dialog-button" onclick="closeDialog()">X</button>     
+          </div>
         <section >
               <span>#${currentPokemon.id}</span>    <p id="text">Hier siehst du info die ich dir ...</p>
                 <div id="poke${currentPokemon.id}" class="pokemon-image-cont ${getPokemonColorInDialog(index)}">
-            <img data-id="dialog-image" src="${currentPokemon.sprites.other.dream_world.front_default}" alt="pokemon Bild ${currentPokemon.name}">
-             
+            <img data-id="dialog-image" src="${currentPokemon.sprites.other.dream_world.front_default}" alt="pokemon Bild ${currentPokemon.name}">    
          </div>
          <div class="card-abilitys">
           <span></span>
@@ -216,15 +222,14 @@ function pokemonDialogTemplate(index, pokemonsEvoData) {
              <div class="buttons-swich" >  <button data-id="next-button" onclick="${changeImage(index)}">></button>
           </div>
         </section>
-        <section>
-
+      <section>
         <div class="tab">
-            <button class="tablinks" onclick="openCity(event, 'About')">About</button>
-            <button class="tablinks" onclick="openCity(event, 'Base-stats')">Base stats</button>
-            <button class="tablinks" onclick="openCity(event, 'Evolution')">Evolution</button>
+            <button class="tablinks" onclick="openTab(event, 'About')">About</button>
+            <button class="tablinks" onclick="openTab(event, 'Base-stats')">Base stats</button>
+            <button class="tablinks" onclick="openTab(event, 'Evolution')">Evolution</button>
         </div>
-
-<section class="pokemon-infos">
+      </section>
+      <section class="pokemon-infos">
         <div id="About" class="tabcontent">
            <table>
       <tr>
@@ -252,22 +257,17 @@ function pokemonDialogTemplate(index, pokemonsEvoData) {
             ${showStatPokemon(currentPokemon)}
            </table>
         </div>
-
+       
         <div id="Evolution" class="tabcontent">
-          <h3>Evolution</h3>
-        
-          <p>Hier kommt evolution chain </p>
+            <h3>Evolution chain:</h3><br>
               <div id="showEvolutionChains"></div>
         </div>
       </section>
 
-
-
-        </section>
+      
             
         <div class="dialog-footer">
          
-          
         </div>`;
 }
 
@@ -311,7 +311,7 @@ function getPokemonTypes(index) {
   return pokemonType;
 }
 
-function openCity(evt, cityName) {
+function openTab(evt, pokemonName) {
   let i, tabcontent, tablinks;
   tabcontent = document.getElementsByClassName("tabcontent");
   for (i = 0; i < tabcontent.length; i++) {
@@ -321,7 +321,7 @@ function openCity(evt, cityName) {
   for (i = 0; i < tablinks.length; i++) {
     tablinks[i].className = tablinks[i].className.replace(" active", "");
   }
-  document.getElementById(cityName).style.display = "block";
+  document.getElementById(pokemonName).style.display = "block";
   evt.currentTarget.className += " active";
 }
 
