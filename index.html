@@ -4,11 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="description" content="Fetch Pokemons from PokeAPI.">
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link
-      rel="icon"
-      type="image/x-icon"
-      href="./assets/icons/Poké_Ball_icon.svg"
-    />
+    <link rel="icon" type="image/x-icon" href="./assets/icons/poke_ball_icon.png"/>
     <title>Pokedex</title>
     <link rel="stylesheet" href="./style.css" />
     <link rel="stylesheet" href="./styles/pokemon-colors.css" />
@@ -20,35 +16,30 @@
     <header>
       <div class="pokemon-container">
         <div class="title-sestion">
-         <div id="titlePokemon">
-         
-           <h1>Pokemon</h1> <img  id="pokeballImage" src="" alt="pokeball image">
+         <div id="titlePokemon">     
+           <h1>Pokemon</h1> <img  id="pokeballImage" src="./assets/icons/poke_ball_icon.png" alt="pokeball image">
          </div>
           <div class="input">
-            <input type="text" data-id="search-input" />
+            <input type="text" data-id="search-input" id="search-text" />
             <button id="search-btn" onclick="searchArray()">search</button>
           </div>
         </div>
       </div>
     </header>
-
     <main data-id="content">
-
-       <div id="loading">
-        <img src="./assets/gif/pikach.gif" alt="Lädt...">
+     <div id="loading">
+        <img src="./assets/icons/poke_ball_icon.png" alt="Lädt...">
       </div>
-
       <div class="pokemon-container">
         <section class="pokemon-section">
           <ul id="pokemon"></ul>
           <button onclick="loadMorePokemons()" id="load-btn">Load more</button>
         </section>
       </div>
-
       <dialog id="myDialog">
         <div id="showDialogPokemon">
           <div class="dialog-header">
-            <h2 id="pokemonName">Mien Daijlog</h2>
+            <h2 id="pokemonName">Mein Dalog</h2>
           </div>
           <section>
             <p id="text">Hier siehst du info die ich dir banana...</p>
@@ -58,9 +49,12 @@
           </div>
         </div>
       </dialog>
-
     </main>
-    <footer></footer>
+    <footer>
+      <section>
+      <h3>Made by Karlo 2026</h3>
+    </section>
+  </footer>
     <script src="./script.js"></script>
     <script src="./scripts/evolution-chain.js"></script>
   </body>
