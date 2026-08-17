@@ -49,8 +49,6 @@ td {
   width: auto;
 }
 
-
-
 @media screen and (max-width:400px) {
   progress{
     inline-size: 8em;
