@@ -43,3 +43,16 @@ td {
   cursor: pointer;
   border: 0.2px solid #f1f1f1;
 }
+
+#pokemon-chain-img{
+  height: 100px;
+  width: auto;
+}
+
+
+
+@media screen and (max-width:400px) {
+  progress{
+    inline-size: 8em;
+  }
+}
