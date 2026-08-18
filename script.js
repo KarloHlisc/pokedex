@@ -1,45 +1,65 @@
 const pokemonContainer = document.getElementById("pokemon");
+const dialogRef = document.getElementById("myDialog");
 let pokemons = [];
 let allPokemonsData = [];
 let indexOffset = 0;
 let currentIndex = 1;
 let indexPokemonCount = 0;
-let totalPokemons = allPokemonsData.length;
+
 let evolutionImageArray = [];
 let pokemonSpeciesUrl = [];
+
 // let currentPokemonEvolutionData = [];
 
 const BASE_URL = "https://pokeapi.co/api/v2/";
 
 function init() {
-  showLoading(true);
   fetchPokemon();
 }
 
-async function fetchPokemon() {
- // showLoading(true);
-  try {
-    if (!pokemons.length == 0) {
+function pokemonLenghtAndOffset(){
+  if (!pokemons.length == 0) {
       pokemons = [];
       indexOffset += 20;
     }
+    return indexOffset;
+}
+
+async function fetchPokemon() {
+    showLoading(true);
+    showLoadButton(false);
+  try {
+    pokemonLenghtAndOffset(indexOffset);
     const url = `${BASE_URL}pokemon?limit=20&offset=${indexOffset}`;
     const response = await fetch(url);
     const data = await response.json();
-    let pokeData = data.results;
-    pokemons.push(...pokeData);
+    getResultsData(data);
+    await countPokemonIndex();
   } catch (error) {
     console.log("Faild to fetch Pokemon :/", error);
     pokemonContainer.innerHTML = "<li>Faild to load :( </li>";
     return;
   } finally {
-   
+    showLoading(false);
+    showLoadButton(true);
   }
-  countPokemonIndex();
+}
+
+function getResultsData(data){
+  let pokeData = data.results;
+  pokemons.push(...pokeData);
 }
 
 function showLoading(isVisible) {
   document.getElementById("loading").classList.toggle("visible", isVisible);
+}
+
+function showLoadButton(isVisible){
+  document.getElementById('load-btn').classList.toggle('visible', isVisible);
+}
+
+function showLoadEvolutionChain(isVisible){
+  document.getElementById('loadingEvolution').classList.toggle('visible', isVisible);
 }
 
 async function countPokemonIndex() {
@@ -53,7 +73,7 @@ async function countPokemonIndex() {
 async function getPokemonAbilities(pokemonURL) {
   const response = await fetch(pokemonURL);
   const pokemonData = await response.json();
-  allPokemonsData.push(pokemonData);
+  allPokemonsData.push(pokemonData); 
 }
 
 function templatePokemon(pokemonsData) {
@@ -61,7 +81,6 @@ function templatePokemon(pokemonsData) {
   templete += getTemplatePokemon(pokemonsData, indexPokemonCount);
   pokemonContainer.innerHTML += templete;
   indexPokemonCount++;
-   showLoading(false);
 }
 
 function pokemonTypes(pokemonsData) {
@@ -80,28 +99,25 @@ function getBackgroundColorPokemon(pokemonsData) {
   return bgColor;
 }
 
-function loadMorePokemons() { //dodati da dok se to radi da se ne moze kliknuti na gumb dok traje fetch. ugraditi u finnalyh
-  fetchPokemon();
+async function loadMorePokemons() { 
+ await fetchPokemon();
 }
 
-function changeImage(direction) {
+function changeImage(direction) { 
+  let totalPokemons = allPokemonsData.length;
   currentIndex += direction;
   if (currentIndex >= totalPokemons) {
     currentIndex = 0;
   } else if (currentIndex < 0) {
     currentIndex = totalPokemons - 1;
   }
-  // updateLightboxImage();
+ showPokeomInDialog(currentIndex);
 }
-/////#############################___DIALOG
-
-const dialogRef = document.getElementById("myDialog");
 
 function openDialog(index) {
   showPokeomInDialog(index);
-  openTab(event, 'About');
+  openTab(event, 'about');
   dialogRef.showModal();
-  //  countPokemonIndex();
 }
 
 function closeDialog() {
@@ -109,26 +125,25 @@ function closeDialog() {
 }
 
 function showPokeomInDialog(index) {
-  document.getElementById("showDialogPokemon").innerHTML =
-    pokemonDialogTemplate(index);
-    getPokemonSpeciesUrl(index);   
+  document.getElementById("showDialogPokemon").innerHTML = pokemonDialogTemplate(index);
+  getPokemonSpeciesUrl(index); 
+  openTab(event, 'about');  
 }
 
  function getPokemonSpeciesUrl(index){
     let speciesUrlPokemon = allPokemonsData[index].species.url;
-     console.log(speciesUrlPokemon);
-     fetchPokemonEvolution(speciesUrlPokemon, index)
+     fetchPokemonEvolution(speciesUrlPokemon, index);
 }
 
 async function fetchPokemonEvolution(pokemonSpeciesUrl ,index) {
- // showLoading(true);
+  //showLoadEvolutionChain(true);
   try {
     const url = pokemonSpeciesUrl;
     const response = await fetch(url);
     const evolution = await response.json();
     let pokemonEvolutionChainUrl = evolution.evolution_chain;
     let chainUrl = pokemonEvolutionChainUrl.url;
-    console.log(chainUrl);
+   // console.log(chainUrl);
     await fetchPokemonEvolutionChain(chainUrl,index)
     //currentPokemonEvolutionData.push(...pokemonEvolutionData);
     //console.log(currentPokemonEvolutionData);
@@ -138,50 +153,50 @@ async function fetchPokemonEvolution(pokemonSpeciesUrl ,index) {
     pokemonContainer.innerHTML = "<li>Faild to load :( </li>";
     return;
   } finally {
-   // showLoading(false);
+   // showLoadEvolutionChain(false);
   }
 }
 
 
 async function fetchPokemonEvolutionChain(pokemonEvolutionUrl,index) {
- // showLoading(true);
+  showLoadEvolutionChain(true);
   try {
     const url = pokemonEvolutionUrl;
     const response = await fetch(url);
     const evolution = await response.json();
-    let evolutionChainUrl = evolution.chain; //.evolves_to;
-
-  //  console.log(evolutionChainUrl);
-
-  //   console.log(evolutionChainUrl.evolves_to[0]);
-
-    while(evolutionChainUrl.evolves_to[0]>0){
-       staviPokemonNutra(imePokemona);
-     console.log(evolutionChainUrl.evolves_to[0].species.name);
-     
-    }
-
-    let imePokemona = evolutionChainUrl.species.name;
-   
-  //  staviPokemonNutra(imePokemona,index);
-    
-    //currentPokemonEvolutionData.push(...pokemonEvolutionData);
-    //console.log(currentPokemonEvolutionData);
-    
+    let evolutionChainUrl = evolution.chain; 
+    resolveEvolutionChainUrl(evolutionChainUrl, index);
   } catch (error) {
     console.log("Faild to fetch Pokemon :/", error);
     pokemonContainer.innerHTML = "<li>Faild to load :( </li>";
     return;
   } finally {
-   // showLoading(false);
+    showLoadEvolutionChain(false);
   }
+}
+
+async function  resolveEvolutionChainUrl(evolutionChainUrl) {
+    let evolvesTo = evolutionChainUrl;
+    let imePokemona = evolvesTo.species.name;
+     if(imePokemona != ""){
+        await staviPokemonNutra(imePokemona);
+      } else{ return;
+           }  
+     if (!evolvesTo.evolves_to[0].species.name){ return;
+      } else{
+            await staviPokemonNutra(evolvesTo.evolves_to[0].species.name);   
+            }  
+     if (!evolvesTo.evolves_to[0].evolves_to.length){ return;
+     }  else{
+        await staviPokemonNutra(evolvesTo.evolves_to[0].evolves_to[0].species.name); 
+  }  
 }
 
 async function staviPokemonNutra(imePokemona){
   const pokemonImage = await getSpecificPokemonImg(imePokemona);
   const evoluRef = document.getElementById('showEvolutionChains');
   let pokemonEvolutionName = imePokemona.charAt(0).toUpperCase() + imePokemona.slice(1);
-  evoluRef.innerHTML +=`<div>${pokemonEvolutionName} </div><img id="pokemon-chain-img" src="${pokemonImage}" alt"${pokemonEvolutionName}">`;
+  evoluRef.innerHTML +=`<div class="poke-chain-list"><h4>${pokemonEvolutionName} </h4><img id="pokemon-chain-img" src="${pokemonImage}" alt"${pokemonEvolutionName}"></div>`;
   return evoluRef;
 }
 
@@ -193,19 +208,23 @@ async function getSpecificPokemonImg(imePokemona) {
   return evolutionImagePokemon;
 }
 
-function pokemonDialogTemplate(index, pokemonsEvoData) {
+function pokemonDialogTemplate(index) {
   let currentPokemon = allPokemonsData[index];
   let pokemonHeight = currentPokemon.height / 10;
   let pokemonWeight = currentPokemon.weight / 10;
 
-  pokemonHeight.toFixed(2).replaceAll(".", ",");
+ pokemonHeight = pokemonHeight.toFixed(1).replace(".", ",");
+ pokemonWeight = pokemonWeight.toFixed(1).replace(".", ",");
 
+ currentIndex = index;
+
+// getPokemonDialogTemplate(index,currentPokemon, pokemonHeight, pokemonWeight)
   return `<div data-id="overlay-pokemon-name" class="dialog-header" >
                   <h2 id="pokemonName">${currentPokemon.name.charAt(0).toUpperCase() + currentPokemon.name.slice(1)}</h2>
                   <button data-id="close-dialog-button" class="dialog-button" onclick="closeDialog()">X</button>     
           </div>
         <section >
-              <span>#${currentPokemon.id}</span>    <p id="text">Hier siehst du info die ich dir ...</p>
+                <p id="text-id-pokemon" class="${getPokemonColorInDialog(index)}">#${currentPokemon.id}</p>
                 <div id="poke${currentPokemon.id}" class="pokemon-image-cont ${getPokemonColorInDialog(index)}">
             <img data-id="dialog-image" src="${currentPokemon.sprites.other.dream_world.front_default}" alt="pokemon Bild ${currentPokemon.name}">    
          </div>
@@ -214,23 +233,23 @@ function pokemonDialogTemplate(index, pokemonsEvoData) {
          </div>
         </section>
         <section id="dialogInfoPokemon">
-         <div class="buttons-swich" > <button data-id="prev-button" onclick="${changeImage(index - 1)}"><</button> 
+         <div class="buttons-swich" > <button data-id="prev-button" class="dialog-button" onclick="changeImage(-1)"><</button> 
           </div>
             <div class="dialog-poke-types types-cont">
              ${getPokemonTypes(index)}
             </div>
-             <div class="buttons-swich" >  <button data-id="next-button" onclick="${changeImage(index)}">></button>
+             <div class="buttons-swich" >  <button data-id="next-button" class="dialog-button" onclick="changeImage(1)">></button>
           </div>
         </section>
       <section>
         <div class="tab">
-            <button class="tablinks" onclick="openTab(event, 'About')">About</button>
-            <button class="tablinks" onclick="openTab(event, 'Base-stats')">Base stats</button>
-            <button class="tablinks" onclick="openTab(event, 'Evolution')">Evolution</button>
+            <button class="tablinks" onclick="openTab(event, 'about')">About</button>
+            <button class="tablinks" onclick="openTab(event, 'base-stats')">Base stats</button>
+            <button class="tablinks" onclick="openTab(event, 'evolution')">Evolution</button>
         </div>
       </section>
       <section class="pokemon-infos">
-        <div id="About" class="tabcontent">
+        <div id="about" class="tabcontent">
            <table>
       <tr>
         <td><b>Species:</b></td>
@@ -244,42 +263,33 @@ function pokemonDialogTemplate(index, pokemonsEvoData) {
         <td><b>Weight:</b></td>
         <td> ${pokemonWeight} kg</td>
       </tr>
-               <tr>
-                 <td><b>Abilities:</b></td>
-                 <td id="abilities-content"> ${showPokemonAbilities(index)}</td>
-               </tr>
-           </table>
-         
+          <tr>
+           <td><b>Abilities:</b></td>
+          <td id="abilities-content"> ${showPokemonAbilities(index)}</td>
+          </tr>
+         </table> 
         </div>
-
-        <div id="Base-stats" class="tabcontent">
+        <div id="base-stats" class="tabcontent">
            <table>
             ${showStatPokemon(currentPokemon)}
            </table>
         </div>
-       
-        <div id="Evolution" class="tabcontent">
-            <h3>Evolution chain:</h3><br>
+        <div id="evolution" class="tabcontent">
+            <h3>Evolution chain:</h3>
+            <div id="loadingEvolution">
+        <img src="./assets/icons/poke_ball_icon.png" alt="Lädt...">
+            </div>
               <div id="showEvolutionChains"></div>
         </div>
       </section>
-
-      
-            
-        <div class="dialog-footer">
-         
-        </div>`;
+        <div class="dialog-footer"> 
+        </div>`;       
 }
 
 function showStatPokemon(currentPokemon) {
   let pokemonStat = "";
-  for (
-    let indexStat = 0; indexStat < currentPokemon.stats.length; indexStat++) {
-    pokemonStat += `<tr>
-                    <td><b>${currentPokemon.stats[indexStat].stat.name.charAt(0).toUpperCase() + currentPokemon.stats[indexStat].stat.name.slice(1)}:</b></td>
-                    <td>${currentPokemon.stats[indexStat].base_stat}</td>
-                    <td><progress data-color="${currentPokemon.stats[indexStat].base_stat}" value="${currentPokemon.stats[indexStat].base_stat}" max="100"></progress></td>
-                 </tr>`;
+  for (let indexStat = 0; indexStat < currentPokemon.stats.length; indexStat++) {
+    pokemonStat += showStatPokemonTemplate(currentPokemon, indexStat);
   }
   return pokemonStat;
 }
@@ -287,8 +297,7 @@ function showStatPokemon(currentPokemon) {
 function showPokemonAbilities(index) {
   let specialAbility = "";
   let currentAbilitiy = allPokemonsData[index].abilities;
-  for (
-    let indexAbility = 0; indexAbility < currentAbilitiy.length; indexAbility++) {
+  for (let indexAbility = 0; indexAbility < currentAbilitiy.length; indexAbility++) {
     specialAbility += `${allPokemonsData[index].abilities[indexAbility].ability.name}, `;
   }
   return (specialAbility = specialAbility.replace(/,\s*$/, " "));
@@ -312,20 +321,26 @@ function getPokemonTypes(index) {
 }
 
 function openTab(evt, pokemonName) {
-  let i, tabcontent, tablinks;
-  tabcontent = document.getElementsByClassName("tabcontent");
-  for (i = 0; i < tabcontent.length; i++) {
-       tabcontent[i].style.display = "none";
+  let tabIndex, tabContent, tabLinks;
+  tabContent = document.getElementsByClassName("tabcontent");
+  for (tabIndex = 0; tabIndex < tabContent.length; tabIndex++) {
+       tabContent[tabIndex].style.display = "none";
   }
-  tablinks = document.getElementsByClassName("tablinks");
-  for (i = 0; i < tablinks.length; i++) {
-    tablinks[i].className = tablinks[i].className.replace(" active", "");
+  tabLinks = document.getElementsByClassName("tablinks");
+  for (tabIndex = 0; tabIndex < tabLinks.length; tabIndex++) {
+    tabLinks[tabIndex].className = tabLinks[tabIndex].className.replace(" active", "");
   }
   document.getElementById(pokemonName).style.display = "block";
   evt.currentTarget.className += " active";
 }
 
-//_____________________________________ Evolution
+
+
+
+
+
+
+
 
 ///#############SEARCH
 
