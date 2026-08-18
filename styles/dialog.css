@@ -6,8 +6,8 @@
   margin: auto;
   justify-content: center;
   align-items: center;
-  width: 400px;
-  height: 700px;
+  width: 550px;
+  height: 600px;
 }
 
 td {
@@ -38,6 +38,13 @@ td {
   cursor: pointer;
 }
 
+#showEvolutionChains{
+  display: flex;
+    text-align: center;
+    padding-top: 30px;
+    justify-content: space-evenly;
+}
+
 .dialog-button:hover {
   background: #ccc;
   cursor: pointer;
@@ -47,10 +54,19 @@ td {
 #pokemon-chain-img{
   height: 100px;
   width: auto;
+  padding: 5px;
 }
 
 @media screen and (max-width:400px) {
   progress{
     inline-size: 8em;
   }
+
+  #pokemon-chain-img {
+    height: 85px;
+  }
+
+  .poke-chain-list h4{
+ font-size: 14px;
+}
 }
