@@ -52,6 +52,7 @@ function getResultsData(data){
 
 function showLoading(isVisible) {
   document.getElementById("loading").classList.toggle("visible", isVisible);
+  document.getElementById("loading-overlay").classList.toggle("visible", isVisible);
 }
 
 function showLoadButton(isVisible){
@@ -117,11 +118,19 @@ function changeImage(direction) {
 function openDialog(index) {
   showPokeomInDialog(index);
   openTab(event, 'about');
+  let stopScrolling = document.getElementById("body");
+  stopScrolling.classList.toggle("stop-scroll");
   dialogRef.showModal();
 }
 
 function closeDialog() {
+  let stopScrolling = document.getElementById("body");
+  stopScrolling.classList.toggle("stop-scroll");
   dialogRef.close();
+}
+
+function logDownBublingPropagation(event) {
+  event.stopPropagation();
 }
 
 function showPokeomInDialog(index) {
