@@ -87,7 +87,31 @@ h1 {
   top: 50%;
   width: 100%;
 }
+.d_none {
+  display: none;
+}
 
+body.d_none {
+  overflow: hidden;
+}
+
+.stop-scroll {
+  position: fixed;
+}
+
+
+#loading-overlay{
+  display: none;
+  position: absolute;
+   overflow: hidden;
+  height: 100%;
+  width: 100%;
+  background-color: rgba(0, 0, 0, 0.375);
+}
+
+#loading-overlay.visible {
+   display: flex;
+}
 #loading.visible {
   display: flex;
 }
