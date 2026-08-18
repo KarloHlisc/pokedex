@@ -8,27 +8,28 @@
     <title>Pokedex</title>
     <link rel="stylesheet" href="./style.css" />
     <link rel="stylesheet" href="./styles/pokemon-colors.css" />
-    <link rel="stylesheet" href="./styles/dialog-tabs.css" />
-    <link rel="stylesheet" href="styles/dialog.css" />
     <script src="./scripts/template.js"></script>
   </head>
   <body onload="init()">
     <header>
       <div class="pokemon-container">
         <div class="title-sestion">
+          <div class="title-style-section">
          <div id="titlePokemon">     
            <h1>Pokemon</h1> <img  id="pokeballImage" src="./assets/icons/poke_ball_icon.png" alt="pokeball image">
          </div>
           <div class="input">
-            <input type="text" data-id="search-input" id="search-text" />
+            <input type="text" placeholder="Search Pokemon" aria-label="search-pokemon-input-field" data-id="search-input" id="search-text" minlength="3" required/>
             <button id="search-btn" onclick="searchArray()">search</button>
           </div>
+         </div>
         </div>
       </div>
     </header>
     <main data-id="content">
-     <div id="loading">
-        <img src="./assets/icons/poke_ball_icon.png" alt="Lädt...">
+     <div class="loading-overlay"><div id="loading">
+        <img src="./assets/icons/poke_ball_icon.png"  class="rotating" alt="Lädt...">
+      </div>
       </div>
       <div class="pokemon-container">
         <section class="pokemon-section">
@@ -56,6 +57,8 @@
     </section>
   </footer>
     <script src="./script.js"></script>
+    <link rel="stylesheet" href="./styles/dialog-tabs.css" />
+    <link rel="stylesheet" href="styles/dialog.css" />
     <script src="./scripts/evolution-chain.js"></script>
   </body>
 </html>
