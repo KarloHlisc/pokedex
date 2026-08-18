@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="./styles/pokemon-colors.css" />
     <script src="./scripts/template.js"></script>
   </head>
-  <body onload="init()">
+  <body id="body" onload="init()">
     <header>
       <div class="pokemon-container">
         <div class="title-sestion">
@@ -27,7 +27,7 @@
       </div>
     </header>
     <main data-id="content">
-     <div class="loading-overlay"><div id="loading">
+     <div id="loading-overlay" class="loading-overlay"><div id="loading">
         <img src="./assets/icons/poke_ball_icon.png"  class="rotating" alt="Lädt...">
       </div>
       </div>
@@ -37,13 +37,13 @@
           <button onclick="loadMorePokemons()" id="load-btn">Load more</button>
         </section>
       </div>
-      <dialog id="myDialog">
-        <div id="showDialogPokemon">
+      <dialog data-id="dialog" id="myDialog" closedby="any" aria-label="pokemon-dialog">
+        <div id="showDialogPokemon" >
           <div class="dialog-header">
-            <h2 id="pokemonName">Mein Dalog</h2>
+            <h2 id="pokemonName"></h2>
           </div>
           <section>
-            <p id="text">Hier siehst du info die ich dir banana...</p>
+            <p id="text"></p>
           </section>
           <div class="dialog-footer">
             <button onclick="closeDialog()">Schließen</button>
