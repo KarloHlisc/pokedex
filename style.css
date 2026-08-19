@@ -9,11 +9,55 @@
 html {
   height: 100%;
 }
+.input{
+      display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}
+
+.column{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+#searchText{
+  height: 30px;
+}
+
+
+#searchBtn, #goBackBtn{
+  display: flex;
+    height: 30px;
+    width: auto;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    padding: 10px;
+    border-radius: 10px;
+    border: none;
+    background-color: #f1f1f1;
+    font-size: 18px;
+}
+
+#goBackBtn{
+  width: 150px;
+}
+
+#searchBtn:hover, #goBackBtn:hover{
+  cursor: pointer;
+  background-color:#ccc ;
+  border: 1px solid #f1f1f1;
+}
 
 .titlePokemon {
   display: flex;
   flex-direction: row-reverse;
   align-items: center;
+  gap: 22px;
 }
 
 body {
@@ -255,6 +299,9 @@ footer {
   align-items: center;
 }
 
+body.modal-open {
+    overflow: hidden;
+} 
 footer h3 {
   color: white;
 }
