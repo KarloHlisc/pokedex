@@ -6,8 +6,12 @@
   margin: auto;
   justify-content: center;
   align-items: center;
-  width: 550px;
+  width: 450px;
   height: 600px;
+}
+
+body.modal-open {
+    overflow: hidden;
 }
 
 td {
@@ -59,11 +63,11 @@ td {
 
 @media screen and (max-width:400px) {
   progress{
-    inline-size: 8em;
+    inline-size: 6em;
   }
 
   #pokemon-chain-img {
-    height: 85px;
+    height: 65px;
   }
 
   .poke-chain-list h4{
