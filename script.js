@@ -5,7 +5,7 @@ let allPokemonsData = [];
 let indexOffset = 0;
 let currentIndex = 1;
 let indexPokemonCount = 0;
-
+let gotOnePokemonsData = [];
 let evolutionImageArray = [];
 let pokemonSpeciesUrl = [];
 
@@ -88,7 +88,7 @@ function pokemonTypes(pokemonsData) {
   let content = "";
   for (let index = 0; index < pokemonsData.types.length; index++) {
     const element = pokemonsData.types[index];
-    content += `<span class="${element.type.name}" class="pokemon-typle-style"><b>${element.type.name}</b> </span>`;
+    content += `<span class="${element.type.name}" class="pokemon-typle-style"><b>${element.type.name}</b></span>`;
   }
   return content;
 }
@@ -118,14 +118,14 @@ function changeImage(direction) {
 function openDialog(index) {
   showPokeomInDialog(index);
   openTab(event, 'about');
-  let stopScrolling = document.getElementById("body");
-  stopScrolling.classList.toggle("stop-scroll");
+//  let stopScrolling = document.getElementById("body");
+//  stopScrolling.classList.add("stop-scroll");
   dialogRef.showModal();
 }
 
 function closeDialog() {
-  let stopScrolling = document.getElementById("body");
-  stopScrolling.classList.toggle("stop-scroll");
+ // let stopScrolling = document.getElementById("body");
+//  stopScrolling.classList.remove("stop-scroll");
   dialogRef.close();
 }
 
@@ -152,11 +152,7 @@ async function fetchPokemonEvolution(pokemonSpeciesUrl ,index) {
     const evolution = await response.json();
     let pokemonEvolutionChainUrl = evolution.evolution_chain;
     let chainUrl = pokemonEvolutionChainUrl.url;
-   // console.log(chainUrl);
     await fetchPokemonEvolutionChain(chainUrl,index)
-    //currentPokemonEvolutionData.push(...pokemonEvolutionData);
-    //console.log(currentPokemonEvolutionData);
-    
   } catch (error) {
     console.log("Faild to fetch Pokemon :/", error);
     pokemonContainer.innerHTML = "<li>Faild to load :( </li>";
@@ -165,7 +161,6 @@ async function fetchPokemonEvolution(pokemonSpeciesUrl ,index) {
    // showLoadEvolutionChain(false);
   }
 }
-
 
 async function fetchPokemonEvolutionChain(pokemonEvolutionUrl,index) {
   showLoadEvolutionChain(true);
@@ -329,7 +324,7 @@ function getPokemonTypes(index) {
   return pokemonType;
 }
 
-function openTab(evt, pokemonName) {
+function openTab(event, pokemonName) {
   let tabIndex, tabContent, tabLinks;
   tabContent = document.getElementsByClassName("tabcontent");
   for (tabIndex = 0; tabIndex < tabContent.length; tabIndex++) {
@@ -340,105 +335,66 @@ function openTab(evt, pokemonName) {
     tabLinks[tabIndex].className = tabLinks[tabIndex].className.replace(" active", "");
   }
   document.getElementById(pokemonName).style.display = "block";
-  evt.currentTarget.className += " active";
+  event.currentTarget.className += " active";
 }
-
-
-
-
-
-
-
-
 
 ///#############SEARCH
 
-function filterItems(arr, query) {
- // for(let index=0; index < arr.length; index++){
-  //  let pokemonName = arr[index].name;
- //   console.log(pokemonName);
-    
- console.log( arr.filter((el) => el.name.toLowerCase().includes(query.toLowerCase())));
-// return arr.filter((el) => el.name.toLowerCase().includes(query.toLowerCase()))
-}
-//}
-function searchArray() {
-    let btnSearch = document.getElementById('search-btn');
-    let polemonBtnValue = document.getElementById('search-text').value;
-   
-    console.log(filterItems(pokemons,polemonBtnValue));
-    document.getElementById('pokemon').innerHTML=templatePokemon(polemonBtnValue);
-   showSarchPokemon(polemonBtnValue);
-}
-
-function showSarchPokemon(arr ,el,pokemonsData) {
-  //  templatePokemon(arr);
-//  document.getElementById('pokemon').innerHTML=templatePokemon(el.name);
-}
-
-
-function renderPokemons(){
-  let renderRef = document.getElementById('dialog-pokemon');
-  renderRef.innerHTML="";
-  for (let index = 0; index < pokemons.length; index++){
-    renderRef.innerHTML += getPokemonTemplate(index);
+ function filterItems(pokemonArray, query) {
+ let gotAPokemon = pokemonArray.filter((searchedPokemon) => searchedPokemon.name.toLowerCase().includes(query.toLowerCase()));
+if(!gotAPokemon.length){
+  pokemonContainer.innerHTML="<li>The searched Pokémon has not yet been loaded or does not exist! Try a new search!</li>";
+  pokemonContainer.innerHTML += `<button id="goBackBtn" onclick="goBackToPokemons()">Go back</button>`;
+  pokemonContainer.setAttribute("class", "column");
+  return;
+ }
+for(let index=0; gotAPokemon.length; index++){
+  let gotPokemonName = gotAPokemon[index].name;
+  findPokemonInArray(gotPokemonName);
   }
 }
 
-function getPokemonTemplate(index){
-  return `<div onclick="toggleOverlay${index}" class="single_element">
-            <img id=showPokemon" src"" `;
-}
-/*
-function toggleOverlay(index){
-  let overlayRef = document.getElementById('overlay')
-}
-
-
-function showDialog() {
-  let getDualog = document.getElementById('overlay');
-  getDualog.innerHTML = ""
-  console.log("open");
-}
-  /*
-  document.getElementById("dialog-pokemon").innerHTML = 
-  `
-     <div id="first-block-pokemon-card">
-        <div id="header-card" class="header-card">
-          <h3 id="pokemon-id">#${pokemonsData.id}</h3>
-          <h2 id="card-pokemon-name">${pokemonsData.name}</h2>
-        </div>
-        <div id="card-pokemon-img">
-          <button id="btn-card-left"><</button>
-          <div id="poke${pokemonsData.id}" class="pokemon-image-cont ${getBackgroundColorPokemon(pokemonsData)}">
-            <img src="${pokemonsData.sprites.other.dream_world.front_default}" alt="pokemon Bild ${pokemonsData.name}">
-        </div>
-          <button id="btn-card-right">></button>
-        </div>
-        <div id="card-pokemon-type">
-          <div class="types-cont" id=types-cont>
-         ${pokemonTypes(pokemonsData)}
-        </div>
-        </div>
-        <div id="card-pokemon-abilitys">
-          <div id="card-main">
-            <ul>
-                <li></li>
-            </ul>
-          </div>
-          <div id="card-stats">
-            <ul>
-                <li></li>
-            </ul>
-          </div>
-          <div id="card-evo-chain">
-            <ul>
-                <li></li>
-            </ul>
-          </div>
-        </div>
-      </div>`;
+function findPokemonInArray(gotPokemonName){
+   document.getElementById('searchText').value="";
+ for(let findIndex=0; pokemons.length; findIndex++){
+    if(pokemons[findIndex] == undefined ){
+      return;
+    }else if(pokemons[findIndex].name == gotPokemonName){
+     console.log(pokemons[findIndex]);
+     let theIndexIs = pokemons[findIndex];
+     showSearchPokemon(theIndexIs.url ,findIndex);
+    } 
+  } 
 }
 
-//showDialog();
-*/
+function searchArray() {
+  showLoadButton(false);
+    let btnSearch = document.getElementById('searchBtn');
+    let pokemonBtnValue = document.getElementById('searchText').value;
+   filterItems(pokemons,pokemonBtnValue); 
+}
+
+async function showSearchPokemon(pokemonUrl ,indexPokemon) {
+    const response = await fetch(pokemonUrl);
+  const onePokemonData = await response.json();
+  gotOnePokemonsData.push(onePokemonData); 
+ putInTemplate(onePokemonData, indexPokemon);
+ }
+
+function putInTemplate(onePokemonData, indexPokemon){
+ let templete = "";
+  templete += getTemplatePokemon(onePokemonData, indexPokemon);
+  pokemonContainer.innerHTML = templete;
+  pokemonContainer.innerHTML += `<button id="goBackBtn" onclick="goBackToPokemons()">Go to start</button>`;
+  pokemonContainer.setAttribute("class", "column");
+}
+
+async function goBackToPokemons(){
+ pokemonContainer.innerHTML = "";
+  indexOffset=0;
+ await countPokemonIndex();
+  showLoadButton(true);
+  pokemonContainer.removeAttribute("class", "column");
+    pokemonContainer.innerHTML = "";
+    loadMorePokemons();
+}
