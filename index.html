@@ -16,11 +16,14 @@
         <div class="title-sestion">
           <div class="title-style-section">
          <div id="titlePokemon">     
-           <h1>Pokemon</h1> <img  id="pokeballImage" src="./assets/icons/poke_ball_icon.png" alt="pokeball image">
+           <h1>Pokémon</h1> <img  id="pokeballImage" src="./assets/icons/poke_ball_icon.png" alt="pokeball image">
          </div>
           <div class="input">
-            <input type="text" placeholder="Search Pokemon" aria-label="search-pokemon-input-field" data-id="search-input" id="search-text" minlength="3" required/>
-            <button id="search-btn" onclick="searchArray()">search</button>
+            <input  type="text" placeholder="Search Pokémon" aria-label="search-pokemon-input-field" data-id="search-input" id="searchText" minlength="3" required/> <!--onblur="canSearch()"-->
+            <button id="searchBtn" onclick="searchArray()" >Search</button>
+          </div>
+          <div class="massage">
+            <p id="text-massage-search"></p>
           </div>
          </div>
         </div>
@@ -37,8 +40,8 @@
           <button onclick="loadMorePokemons()" id="load-btn">Load more</button>
         </section>
       </div>
-      <dialog data-id="dialog" id="myDialog" closedby="any" aria-label="pokemon-dialog">
-        <div id="showDialogPokemon" >
+      <dialog data-id="dialog" id="myDialog"  aria-label="pokemon-dialog" onclick="logDownBublingPropagation(event)" closedby="any"> <!--closedby="any"-->
+        <div id="showDialogPokemon" onclick="logDownBublingPropagation(event)">
           <div class="dialog-header">
             <h2 id="pokemonName"></h2>
           </div>
