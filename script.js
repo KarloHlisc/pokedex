@@ -288,7 +288,6 @@ function findPokemonInArray(gotPokemonName){
     if(arrayPokemons[findIndex] == undefined ){
       return;
     }else if(arrayPokemons[findIndex].name == gotPokemonName){
-     console.log(arrayPokemons[findIndex]);
      let theIndexIs = arrayPokemons[findIndex];
      showSearchPokemon(theIndexIs.url ,findIndex);
     } 
