@@ -26,23 +26,29 @@ function pokemonLenghtAndOffset(){
 }
 
 async function fetchPokemon() {
-    showLoading(true);
-    showLoadButton(false);
+    beforeTry();
   try {
     pokemonLenghtAndOffset(indexOffset);
-    const url = `${BASE_URL}pokemon?limit=20&offset=${indexOffset}`;
-    const response = await fetch(url);
+    const response = await fetch(`${BASE_URL}pokemon?limit=20&offset=${indexOffset}`);
     const data = await response.json();
     getResultsData(data);
-    await countPokemonIndex();
   } catch (error) {
-    console.log("Faild to fetch Pokemon :/", error);
     pokemonContainer.innerHTML = "<li>Faild to load :( </li>";
     return;
   } finally {
-    showLoading(false);
-    showLoadButton(true);
-  }
+    await countPokemonIndex();
+    afterTry();}
+}
+
+function beforeTry(){
+  showLoading(true);
+  showLoadButton(false);
+}
+
+ function afterTry(){
+  // pokemonContainer.style.display="flex";
+  showLoading(false);
+  showLoadButton(true);
 }
 
 function getResultsData(data){
@@ -65,11 +71,13 @@ async function getPokemonAbilities(pokemonURL) {
   allPokemonsData.push(pokemonData); 
 }
 
-function templatePokemon(pokemonsData) {
+ async function templatePokemon(pokemonsData) {
   let templete = "";
-  templete += getTemplatePokemon(pokemonsData, indexPokemonCount);
+  templete += await getTemplatePokemon(pokemonsData, indexPokemonCount);
+//  pokemonContainer.style.display="none";
   pokemonContainer.innerHTML += templete;
   indexPokemonCount++;
+ 
 }
 
 function pokemonTypes(pokemonsData) {
@@ -130,7 +138,12 @@ function logDownBublingPropagation(event) {
 }
 
 function showPokeomInDialog(index) {
-  document.getElementById("showDialogPokemon").innerHTML = pokemonDialogTemplate(index);
+  let currentPokemon = allPokemonsData[index];
+  let pokemonHeight = currentPokemon.height / 10;
+  let pokemonWeight = currentPokemon.weight / 10;
+      pokemonHeight = pokemonHeight.toFixed(1).replace(".", ",");
+      pokemonWeight = pokemonWeight.toFixed(1).replace(".", ",");
+  document.getElementById("showDialogPokemon").innerHTML = pokemonDialogTemplate(index,currentPokemon,pokemonHeight,pokemonWeight);
   getPokemonSpeciesUrl(index); 
   openTab(event, 'about');  
 }
@@ -141,10 +154,8 @@ function showPokeomInDialog(index) {
 }
 
 async function fetchPokemonEvolution(pokemonSpeciesUrl ,index) {
-  showLoadEvolutionChain(true);
   try {
-    const url = pokemonSpeciesUrl;
-    const response = await fetch(url);
+    const response = await fetch(pokemonSpeciesUrl);
     const evolution = await response.json();
     let pokemonEvolutionChainUrl = evolution.evolution_chain;
     let chainUrl = pokemonEvolutionChainUrl.url;
@@ -153,16 +164,13 @@ async function fetchPokemonEvolution(pokemonSpeciesUrl ,index) {
     console.log("Faild to fetch Pokemon :/", error);
     pokemonContainer.innerHTML = "<li>Faild to load :( </li>";
     return;
-  } finally {
-   showLoadEvolutionChain(false);
   }
 }
 
 async function fetchPokemonEvolutionChain(pokemonEvolutionUrl,index) {
- 
+  showLoadEvolutionChain(true);
   try {
-    const url = pokemonEvolutionUrl;
-    const response = await fetch(url);
+    const response = await fetch(pokemonEvolutionUrl);
     const evolution = await response.json();
     let evolutionChainUrl = evolution.chain; 
     resolveEvolutionChainUrl(evolutionChainUrl, index);
@@ -170,16 +178,19 @@ async function fetchPokemonEvolutionChain(pokemonEvolutionUrl,index) {
     console.log("Faild to fetch Pokemon :/", error);
     pokemonContainer.innerHTML = "<li>Faild to load :( </li>";
     return;
-  } finally {
- 
+  } finally{
+     showLoadEvolutionChain(false);
   }
 }
 
-async function  resolveEvolutionChainUrl(evolutionChainUrl) {
-   showLoadEvolutionChain(true);
+function resolveEvolutionChainUrl(evolutionChainUrl) {
     let evolvesTo = evolutionChainUrl;
     let imePokemona = evolvesTo.species.name;
-     if(imePokemona != ""){
+    resolveLoeadedPokemons(imePokemona,evolvesTo);
+}
+
+async function resolveLoeadedPokemons(imePokemona,evolvesTo){
+   if(imePokemona != ""){
         await staviPokemonNutra(imePokemona);
       } else{ return;
            }  
@@ -190,8 +201,7 @@ async function  resolveEvolutionChainUrl(evolutionChainUrl) {
      if (!evolvesTo.evolves_to[0].evolves_to.length){ return;
      }  else{
         await staviPokemonNutra(evolvesTo.evolves_to[0].evolves_to[0].species.name); 
-  }  
-     showLoadEvolutionChain(false);
+  }
 }
 
 async function staviPokemonNutra(imePokemona){
@@ -258,8 +268,6 @@ function openTab(event, pokemonName) {
   event.currentTarget.className += " active";
 }
 
-///#############SEARCH
-
  function filterItems(pokemonArray, query) {
  let gotAPokemon = pokemonArray.filter((searchedPokemon) => searchedPokemon.name.toLowerCase().includes(query.toLowerCase()));
   checkIfPokemonExist(gotAPokemon);
@@ -303,7 +311,7 @@ function canSearch(){
     }
     else if(pokemonBtnValue.length >= 3){
       btnSearch.disabled=false;
-      textMassage.innerText="";
+      textMassage.innerText=" ";
     }
 }
 
@@ -337,85 +345,3 @@ function putInTemplate(onePokemonData, indexPokemon){
   document.getElementById('goBackBtn').style.display="none";
   pokemonSearchContainer.innerHTML = '';
 }
-
-
-
-/*
-function pokemonDialogTemplate(index) {
-  let currentPokemon = allPokemonsData[index];
-  let pokemonHeight = currentPokemon.height / 10;
-  let pokemonWeight = currentPokemon.weight / 10;
-
- pokemonHeight = pokemonHeight.toFixed(1).replace(".", ",");
- pokemonWeight = pokemonWeight.toFixed(1).replace(".", ",");
-
- currentIndex = index;
-
-// getPokemonDialogTemplate(index,currentPokemon, pokemonHeight, pokemonWeight)
-  return `<div data-id="overlay-pokemon-name" class="dialog-header" >
-                  <h2 id="pokemonName">${currentPokemon.name.charAt(0).toUpperCase() + currentPokemon.name.slice(1)}</h2>
-                  <button data-id="close-dialog-button" class="dialog-button" onclick="closeDialog()">X</button>     
-          </div>
-        <section >
-                <p id="text-id-pokemon" class="${getPokemonColorInDialog(index)}">#${currentPokemon.id}</p>
-                <div id="poke${currentPokemon.id}" class="pokemon-image-cont ${getPokemonColorInDialog(index)}">
-            <img data-id="dialog-image" src="${currentPokemon.sprites.other.dream_world.front_default}" alt="pokemon Bild ${currentPokemon.name}">    
-         </div>
-         <div class="card-abilitys">
-          <span></span>
-         </div>
-        </section>
-        <section id="dialogInfoPokemon">
-         <div class="buttons-swich" > <button data-id="prev-button" class="dialog-button" onclick="changeImage(-1)"><</button> 
-          </div>
-            <div class="dialog-poke-types types-cont">
-             ${getPokemonTypes(index)}
-            </div>
-             <div class="buttons-swich" >  <button data-id="next-button" class="dialog-button" onclick="changeImage(1)">></button>
-          </div>
-        </section>
-      <section>
-        <div class="tab">
-            <button class="tablinks" onclick="openTab(event, 'about')">About</button>
-            <button class="tablinks" onclick="openTab(event, 'base-stats')">Base stats</button>
-            <button class="tablinks" onclick="openTab(event, 'evolution')">Evolution</button>
-        </div>
-      </section>
-      <section class="pokemon-infos">
-        <div id="about" class="tabcontent">
-           <table>
-      <tr>
-        <td><b>Species:</b></td>
-        <td> ${currentPokemon.species.name.charAt(0).toUpperCase() + currentPokemon.name.slice(1)}</td>
-      </tr>
-      <tr>
-        <td><b>Height:</b></td>
-        <td> ${pokemonHeight} m</td>
-      </tr>
-      <tr>
-        <td><b>Weight:</b></td>
-        <td> ${pokemonWeight} kg</td>
-      </tr>
-          <tr>
-           <td><b>Abilities:</b></td>
-          <td id="abilities-content"> ${showPokemonAbilities(index)}</td>
-          </tr>
-         </table> 
-        </div>
-        <div id="base-stats" class="tabcontent">
-           <table>
-            ${showStatPokemon(currentPokemon)}
-           </table>
-        </div>
-        <div id="evolution" class="tabcontent">
-            <h3>Evolution chain:</h3>
-            <div id="loadingEvolution">
-        <img src="./assets/icons/poke_ball_icon.png" alt="Lädt...">
-            </div>
-              <div id="showEvolutionChains"></div>
-        </div>
-      </section>
-        <div class="dialog-footer"> 
-        </div>`;       
-}
-*/
