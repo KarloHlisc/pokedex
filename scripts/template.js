@@ -1,13 +1,13 @@
 function getTemplatePokemon(pokemonsData, index) {
   return `
-    <li data-id='card'>
-    <div class="pokemon-cont" onclick="openDialog(${index})">
+    <li data-id="card">
+    <div class="pokemon-cont" role="button" onclick="openDialog(${index})">
         <div class="pokemon-header">
             <span>#${pokemonsData.id}</span>
             <h3>${pokemonsData.name.charAt(0).toUpperCase()+pokemonsData.name.slice(1)}</h3>
         </div>
         <div id="poke${pokemonsData.id}" class="pokemon-image-cont ${getBackgroundColorPokemon(pokemonsData)}">
-            <img src="${pokemonsData.sprites.other.dream_world.front_default}" alt="pokemon Bild ${pokemonsData.name}">
+            <img data-id="card-image" src="${pokemonsData.sprites.other.dream_world.front_default}" alt="pokemon Bild ${pokemonsData.name}">
         </div>
         <div class="types-cont" id=types-cont>
          ${pokemonTypes(pokemonsData)}
@@ -25,13 +25,7 @@ function showStatPokemonTemplate(currentPokemon, indexStat){
         </tr>`;
 }
 
-function pokemonDialogTemplate(index) {
-  let currentPokemon = allPokemonsData[index];
-  let pokemonHeight = currentPokemon.height / 10;
-  let pokemonWeight = currentPokemon.weight / 10;
-      pokemonHeight = pokemonHeight.toFixed(1).replace(".", ",");
-      pokemonWeight = pokemonWeight.toFixed(1).replace(".", ",");
-      currentIndex = index;
+function pokemonDialogTemplate(index,currentPokemon,pokemonHeight,pokemonWeight) {
   return `<div data-id="overlay-pokemon-name" class="dialog-header" >
                   <h2 id="pokemonName">${currentPokemon.name.charAt(0).toUpperCase() + currentPokemon.name.slice(1)}</h2>
                   <button data-id="close-dialog-button" class="dialog-button" onclick="closeDialog()">X</button>     
@@ -90,7 +84,7 @@ function pokemonDialogTemplate(index) {
         <div id="evolution" class="tabcontent">
             <h3>Evolution chain:</h3>
             <div id="loadingEvolution">
-        <img src="./assets/icons/poke_ball_icon.png" alt="Lädt...">
+                  <img src="./assets/icons/poke_ball_icon.png" class="rotating" alt="Lädt...">
             </div>
               <div id="showEvolutionChains"></div>
         </div>
