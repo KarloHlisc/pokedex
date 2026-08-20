@@ -1,6 +1,6 @@
 function getTemplatePokemon(pokemonsData, index) {
   return `
-    <li>
+    <li data-id='card'>
     <div class="pokemon-cont" onclick="openDialog(${index})">
         <div class="pokemon-header">
             <span>#${pokemonsData.id}</span>
@@ -25,9 +25,14 @@ function showStatPokemonTemplate(currentPokemon, indexStat){
         </tr>`;
 }
 
-/*
-function  getPokemonDialogTemplate(currentPokemon, pokemonHeight, pokemonWeight,pokemonName, index){
-     return `<div data-id="overlay-pokemon-name" class="dialog-header" >
+function pokemonDialogTemplate(index) {
+  let currentPokemon = allPokemonsData[index];
+  let pokemonHeight = currentPokemon.height / 10;
+  let pokemonWeight = currentPokemon.weight / 10;
+      pokemonHeight = pokemonHeight.toFixed(1).replace(".", ",");
+      pokemonWeight = pokemonWeight.toFixed(1).replace(".", ",");
+      currentIndex = index;
+  return `<div data-id="overlay-pokemon-name" class="dialog-header" >
                   <h2 id="pokemonName">${currentPokemon.name.charAt(0).toUpperCase() + currentPokemon.name.slice(1)}</h2>
                   <button data-id="close-dialog-button" class="dialog-button" onclick="closeDialog()">X</button>     
           </div>
@@ -89,53 +94,7 @@ function  getPokemonDialogTemplate(currentPokemon, pokemonHeight, pokemonWeight,
             </div>
               <div id="showEvolutionChains"></div>
         </div>
-      </section>   
+      </section>
         <div class="dialog-footer"> 
-        </div>`;
+        </div>`;       
 }
-
-function openTab(evt, pokemonName) {
-  let tabIndex, tabContent, tabLinks;
-  tabContent = document.getElementsByClassName("tabcontent");
-  for (tabIndex = 0; tabIndex < tabContent.length; tabIndex++) {
-       tabContent[tabIndex].style.display = "none";
-  }
-  tabLinks = document.getElementsByClassName("tablinks");
-  for (tabIndex = 0; tabIndex < tabLinks.length; tabIndex++) {
-    tabLinks[tabIndex].className = tabLinks[tabIndex].className.replace(" active", "");
-  }
-  document.getElementById(pokemonName).style.display = "block";
-  evt.currentTarget.className += " active";
-}
-
-function openDialog(index) {
-  showPokeomInDialog(index);
-  openTab(event, 'about');
-  dialogRef.showModal();
-}
-
-function closeDialog() {
-  dialogRef.close();
-}
-
-function showPokeomInDialog(index) {
-  document.getElementById("showDialogPokemon").innerHTML = pokemonDialogTemplate(index);
-  getPokemonSpeciesUrl(index); 
-  openTab(event, 'about');  
-}
-/*
-function openTab(evt, pokemonName) {
-  let tabIndex, tabContent, tabLinks;
-  tabContent = document.getElementsByClassName("tabcontent");
-  for (tabIndex = 0; tabIndex < tabContent.length; tabIndex++) {
-       tabContent[tabIndex].style.display = "none";
-  }
-  tabLinks = document.getElementsByClassName("tablinks");
-  for (tabIndex = 0; tabIndex < tabLinks.length; tabIndex++) {
-    tabLinks[tabIndex].className = tabLinks[tabIndex].className.replace(" active", "");
-  }
-  document.getElementById(pokemonName).style.display = "block";
-  evt.currentTarget.className += " active";
-}
-
-*/
