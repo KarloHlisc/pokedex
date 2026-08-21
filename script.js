@@ -43,12 +43,13 @@ async function fetchPokemon() {
 function beforeTry(){
   showLoading(true);
   showLoadButton(false);
+  showContent(false);
 }
 
- function afterTry(){
-  // pokemonContainer.style.display="flex";
+function afterTry(){
   showLoading(false);
   showLoadButton(true);
+  showContent(true);
 }
 
 function getResultsData(data){
@@ -71,13 +72,11 @@ async function getPokemonAbilities(pokemonURL) {
   allPokemonsData.push(pokemonData); 
 }
 
- async function templatePokemon(pokemonsData) {
+ function templatePokemon(pokemonsData) {
   let templete = "";
-  templete += await getTemplatePokemon(pokemonsData, indexPokemonCount);
-//  pokemonContainer.style.display="none";
+  templete += getTemplatePokemon(pokemonsData, indexPokemonCount);
   pokemonContainer.innerHTML += templete;
   indexPokemonCount++;
- 
 }
 
 function pokemonTypes(pokemonsData) {
@@ -104,6 +103,10 @@ function showLoading(isVisible) {
   document.getElementById("loading").classList.toggle("visible", isVisible);
 }
 
+function showContent(isVisible) {
+  document.getElementById('pokemon').classList.toggle("visible", isVisible);
+}
+
 function showLoadButton(isVisible){
   document.getElementById('load-btn').classList.toggle('visible', isVisible);
 }
@@ -120,12 +123,11 @@ function changeImage(direction) {
   } else if (currentIndex < 0) {
     currentIndex = totalPokemons - 1;
   }
- showPokeomInDialog(currentIndex);
+ showPokemonInDialog(currentIndex);
 }
 
 function openDialog(index) {
-  showPokeomInDialog(index);
-  openTab(event, 'about');
+  showPokemonInDialog(index);
   dialogRef.showModal();
 }
 
@@ -137,12 +139,13 @@ function logDownBublingPropagation(event) {
   event.stopPropagation();
 }
 
-function showPokeomInDialog(index) {
+  function showPokemonInDialog(index) {
   let currentPokemon = allPokemonsData[index];
   let pokemonHeight = currentPokemon.height / 10;
   let pokemonWeight = currentPokemon.weight / 10;
       pokemonHeight = pokemonHeight.toFixed(1).replace(".", ",");
       pokemonWeight = pokemonWeight.toFixed(1).replace(".", ",");
+      currentIndex = index;
   document.getElementById("showDialogPokemon").innerHTML = pokemonDialogTemplate(index,currentPokemon,pokemonHeight,pokemonWeight);
   getPokemonSpeciesUrl(index); 
   openTab(event, 'about');  
@@ -168,7 +171,7 @@ async function fetchPokemonEvolution(pokemonSpeciesUrl ,index) {
 }
 
 async function fetchPokemonEvolutionChain(pokemonEvolutionUrl,index) {
-  showLoadEvolutionChain(true);
+   showLoadEvolutionChain(true);
   try {
     const response = await fetch(pokemonEvolutionUrl);
     const evolution = await response.json();
@@ -178,8 +181,7 @@ async function fetchPokemonEvolutionChain(pokemonEvolutionUrl,index) {
     console.log("Faild to fetch Pokemon :/", error);
     pokemonContainer.innerHTML = "<li>Faild to load :( </li>";
     return;
-  } finally{
-     showLoadEvolutionChain(false);
+  } finally{showLoadEvolutionChain(false);
   }
 }
 
@@ -201,14 +203,14 @@ async function resolveLoeadedPokemons(imePokemona,evolvesTo){
      if (!evolvesTo.evolves_to[0].evolves_to.length){ return;
      }  else{
         await staviPokemonNutra(evolvesTo.evolves_to[0].evolves_to[0].species.name); 
-  }
+     }
 }
 
 async function staviPokemonNutra(imePokemona){
   const pokemonImage = await getSpecificPokemonImg(imePokemona);
   const evoluRef = document.getElementById('showEvolutionChains');
   let pokemonEvolutionName = imePokemona.charAt(0).toUpperCase() + imePokemona.slice(1);
-  evoluRef.innerHTML +=`<div class="poke-chain-list"><h4>${pokemonEvolutionName} </h4><img id="pokemon-chain-img" src="${pokemonImage}" alt"${pokemonEvolutionName}"></div>`;
+  evoluRef.innerHTML +=`<div class="poke-chain-list"><h4>${pokemonEvolutionName} </h4><img id="pokemon-chain-img" src="${pokemonImage}" alt"${pokemonEvolutionName}"></div>`; 
   return evoluRef;
 }
 
@@ -283,7 +285,7 @@ function checkIfPokemonExist(gotAPokemon){
       findPokemonInArray(gotPokemonName);
      }
  }else{
-  pokemonSearchContainer.innerHTML="<li data-id='not-found'>The searched Pokémon has not yet been loaded or does not exist! Try a new search!</li>";
+  pokemonSearchContainer.innerHTML="<li data-id='not-found' id='not-found'>The searched Pokémon has not yet been loaded or does not exist! Try a new search!</li>";
   document.getElementById('searchBtn').disabled=true;
   document.getElementById('searchText').value="";
   document.getElementById('goBackBtn').style.display="flex";
